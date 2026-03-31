@@ -2314,6 +2314,49 @@
             margin-top: 15px;
         }
 
+        /* ================================================================= */
+        /* --- GOOGLE ADSENSE SAĞ/SOL REKLAM ALANLARI --- */
+        /* ================================================================= */
+        .google-ad-left, .google-ad-right {
+            position: fixed;
+            top: 120px; /* Üst menüden (Header) biraz aşağıda başlar */
+            width: 160px; /* Google Dikey Reklam standart boyutu */
+            height: 600px;
+            z-index: 50;
+            background-color: rgba(0,0,0,0.02); /* Reklam yüklenene kadar belli belirsiz bir arkaplan */
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .google-ad-left {
+            left: 20px; /* Ekranın soluna yaslar */
+        }
+
+        .google-ad-right {
+            right: 20px; /* Ekranın sağına yaslar */
+        }
+
+        /* Reklam yüklenene kadar çıkacak olan "Reklam Alanı" yazısı (Opsiyonel) */
+        .ad-placeholder-text {
+            color: #ccc;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            position: absolute;
+            z-index: -1;
+        }
+
+        /* KRİTİK AYAR: Ekran daraldığında (1400px altı) reklamları gizle! 
+           Yoksa reklamlar ana programın (1200px) üstüne biner. */
+        @media (max-width: 1450px) {
+            .google-ad-left, .google-ad-right {
+                display: none !important;
+            }
+        }
+
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -2341,6 +2384,18 @@
             <div class="spinner"></div>
             <p class="loader-text">Ana menüye dönülüyor...</p>
         </div>
+    </div>
+
+    <div class="ad-space-left">
+        <i class="fa-solid fa-rectangle-ad" style="font-size: 28px; margin-bottom: 12px; color: #dee2e6;"></i>
+        REKLAM<br>ALANI
+        <span style="font-size: 11px; margin-top: 8px; font-weight: 600; color: #ced4da;">160x600</span>
+    </div>
+
+    <div class="ad-space-right">
+        <i class="fa-solid fa-rectangle-ad" style="font-size: 28px; margin-bottom: 12px; color: #dee2e6;"></i>
+        REKLAM<br>ALANI
+        <span style="font-size: 11px; margin-top: 8px; font-weight: 600; color: #ced4da;">160x600</span>
     </div>
 
 
@@ -3710,6 +3765,47 @@
                     .layout-segment input[type="radio"] { display: none; }
                     .layout-segment label { flex: 1; text-align: center; padding: 8px; margin: 0; cursor: pointer; font-size: 12px; font-weight: 800; border-radius: 6px; color: #007bff; transition: all 0.2s; white-space: nowrap; }
                     .layout-segment input:checked + label { background-color: #007bff; color: white; box-shadow: 0 2px 4px rgba(0,123,255,0.3); }
+
+
+                    /* ================================================================= */
+                    /* --- SAĞ/SOL REKLAM YER TUTUCULARI (PLACEHOLDER) --- */
+                    /* ================================================================= */
+                    .ad-space-left, .ad-space-right {
+                        position: fixed;
+                        top: 110px; /* Üst menüden biraz aşağıda */
+                        width: 160px; /* Dikey reklam standart genişliği */
+                        height: 600px; /* Dikey reklam standart yüksekliği */
+                        background-color: #f8f9fa; /* Hafif gri arkaplan */
+                        border: 2px dashed #ced4da; /* Kesik çizgili çerçeve */
+                        border-radius: 12px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        z-index: 50;
+                        color: #adb5bd;
+                        font-weight: 800;
+                        font-size: 16px;
+                        text-align: center;
+                        box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+                    }
+
+                    .ad-space-left {
+                        left: 20px;
+                    }
+
+                    .ad-space-right {
+                        right: 20px;
+                    }
+
+                    /* YENİ: Akıllı ölçekleme sayesinde artık laptoplarda reklamlar saklanmayacak! 
+                    Sadece telefona (900px altı) geçilince reklamlar gizlenir. */
+                    @media (max-width: 900px) {
+                        .ad-space-left, .ad-space-right {
+                            display: none !important;
+                        }
+                    }
+
                 </style>
 
                 <div class="settings-tab-segment">
@@ -4269,6 +4365,59 @@
         renderLessons();
 
         // =================================================================
+        // --- BULUT AYAR SENKRONİZASYON MOTORU ---
+        // =================================================================
+        window.loadGlobalSettings = async function() {
+            if (!currentUserUid) return;
+            try {
+                const docRef = doc(db, "users", currentUserUid);
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists() && docSnap.data().settings) {
+                    const settings = docSnap.data().settings;
+                    
+                    // 1. Hedef Netler
+                    if (settings.targetNets) {
+                        window.targetNets = settings.targetNets;
+                        localStorage.setItem('targetNets', JSON.stringify(window.targetNets));
+                    }
+                    
+                    // 2. Ders Renkleri
+                    if (settings.subjectColors) {
+                        window.subjectColors = settings.subjectColors;
+                        localStorage.setItem('subjectColors', JSON.stringify(window.subjectColors));
+                    }
+                    
+                    // 3. Planlayıcı Düzeni ve Filtreler
+                    if (settings.plannerLayout) {
+                        localStorage.setItem('plannerLayout', settings.plannerLayout);
+                        window.plannerLayout = settings.plannerLayout;
+                    }
+                    if (settings.filteredSubjects) {
+                        window.filteredSubjects = settings.filteredSubjects;
+                    }
+                }
+            } catch (e) {
+                console.error("Ayarlar buluttan çekilirken hata:", e);
+            }
+        };
+
+        window.saveGlobalSettings = async function() {
+            if (!currentUserUid) return;
+            try {
+                const settingsData = {
+                    targetNets: window.targetNets || JSON.parse(localStorage.getItem('targetNets') || "{}"),
+                    subjectColors: window.subjectColors || JSON.parse(localStorage.getItem('subjectColors') || "{}"),
+                    plannerLayout: localStorage.getItem('plannerLayout') || "column",
+                    filteredSubjects: window.filteredSubjects || []
+                };
+                await setDoc(doc(db, "users", currentUserUid), { settings: settingsData }, { merge: true });
+            } catch (e) {
+                console.error("Ayarlar buluta kaydedilirken hata:", e);
+            }
+        };
+
+        // =================================================================
         // 5. YENİ MİMARİ: ALT KOLEKSİYONLU FIREBASE NOT MOTORU
         // =================================================================
         const mainPageLoader = document.getElementById('mainPageLoader');
@@ -4366,6 +4515,8 @@
                     // Görevler yüklendiğinde takvimi ve ekranı güncelle
                     if(typeof updateWeeklyPlannerView === 'function') updateWeeklyPlannerView();
                     if(typeof renderTodayTasks === 'function') renderTodayTasks();
+                    // 5. AYARLARI ÇEK (Hedefler, Renkler, Görünüm)
+                    await window.loadGlobalSettings();
 
                 } catch (error) {
                     console.error("Veri çekilirken hata oluştu: ", error);
@@ -6740,7 +6891,8 @@
         function closeTaskModalAndClear() {
             // YENİ EKLENEN KISIM: Eğer yeni bir görev eklemekten VAZGEÇİLİRSE (İptal vs)
             // İçine video eklendiyse, o videoları sahipsiz bırakmamak için etiketleri geri alıyoruz!
-            if (!editingTaskId && typeof currentTaskVideos !== 'undefined' && currentTaskVideos.length > 0) {
+            // DÜZELTME: "!window.isTaskSaving" eklendi! Eğer görev başarıyla kaydediliyorsa bu temizlik ÇALIŞMAZ.
+            if (!window.isTaskSaving && !editingTaskId && typeof currentTaskVideos !== 'undefined' && currentTaskVideos.length > 0) {
                 let playlistsToUpdate = new Set();
                 currentTaskVideos.forEach(v => {
                     const pl = savedPlaylists.find(p => p.id.toString() === v.plId.toString());
@@ -6759,10 +6911,9 @@
             addTaskModal.style.display = 'none';
             const savedEditId = editingTaskId;
             const savedDate = selectedDateForTask;
-            
             editingTaskId = null;
             originalTaskEditState = null;
-            
+
             if (savedEditId && savedDate) {
                 window.viewTaskDetails(savedDate, savedEditId);
             }
@@ -6857,20 +7008,21 @@
             const originalText = saveBtn.innerText;
             saveBtn.innerText = "Kaydediliyor...";
             saveBtn.disabled = true;
+            
+            // YENİ EKLENEN KISIM: Kayıt işlemi başladı, pencere kapanırken etiketleri silmemesi için sistemi uyarıyoruz!
+            window.isTaskSaving = true; 
 
             const taskTypeVal = taskTypeInput.value;
             const isQcVisible = taskTypeVal === 'Test Çözümü' || taskTypeVal === 'Deneme Çözümü' || taskTypeVal === 'Genel Deneme';
-            
-            // Kutuda yazan sayıyı al
             const finalQuestionCount = isQcVisible ? (parseInt(document.getElementById('taskQuestionCount').value) || null) : null;
-
+            
             const newTask = {
                 id: editingTaskId ? editingTaskId : Date.now(),
                 examType: taskExamTypeInput.value,
                 track: taskExamTypeInput.value === 'ayt' ? taskTrackInput.value : null,
                 subject: taskSubjectInput.value,
                 taskType: taskTypeVal,
-                questionCount: finalQuestionCount, // <-- YENİ VEYA DÜZENLENMİŞ RAKAM BURADA OLMALI
+                questionCount: finalQuestionCount,
                 desc: taskDesc.value.trim(),
                 duration: parseInt(taskDuration.value),
                 dateKey: selectedDateForTask,
@@ -6882,7 +7034,7 @@
                 await setDoc(taskDocRef, newTask);
 
                 if (!userTasks[selectedDateForTask]) userTasks[selectedDateForTask] = [];
-
+                
                 if (editingTaskId) {
                     const index = userTasks[selectedDateForTask].findIndex(t => t.id === editingTaskId);
                     if (index !== -1) userTasks[selectedDateForTask][index] = newTask;
@@ -6891,14 +7043,15 @@
                 }
 
                 closeTaskModalAndClear();
-                updateWeeklyPlannerView(); 
-                
+                updateWeeklyPlannerView();
             } catch (error) {
                 console.error("Görev kaydedilirken hata: ", error);
                 alert("Sistem Hatası: Görev kaydedilemedi.");
             } finally {
                 saveBtn.innerText = originalText;
                 saveBtn.disabled = false;
+                // YENİ EKLENEN KISIM: İşlem bitince sistemi normale döndür (İptal edilebilsin diye)
+                window.isTaskSaving = false; 
             }
         }
 
@@ -9499,12 +9652,19 @@
         });
 
         // Ayarları Kaydet
-        document.getElementById('saveSettingsBtn')?.addEventListener('click', () => {
+        document.getElementById('saveSettingsBtn')?.addEventListener('click', async () => {
+            const btn = document.getElementById('saveSettingsBtn');
+            const origHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Kaydediliyor...';
+            
             window.targetNets['TYT'] = document.getElementById('targetTYT').value;
             window.targetNets['AYT'] = document.getElementById('targetAYT').value;
-            
             localStorage.setItem('targetNets', JSON.stringify(window.targetNets));
+            
+            await window.saveGlobalSettings(); // BULUTA KAYDET
+            
             document.getElementById('advancedSettingsModal').style.display = 'none';
+            btn.innerHTML = origHTML;
             
             // Kaydettikten sonra grafikleri anında güncelle
             if (typeof window.renderExpandedExamsView === 'function') window.renderExpandedExamsView();
@@ -9807,19 +9967,27 @@
             });
         }
 
-        // Ayarları Kalıcı Kaydet
+        // Ayarları Kalıcı Kaydet (Buluta Ekli)
         if (savePlannerSettingsBtn) {
-            savePlannerSettingsBtn.addEventListener('click', () => {
+            savePlannerSettingsBtn.addEventListener('click', async () => {
+                const btn = savePlannerSettingsBtn;
+                const origHTML = btn.innerHTML;
+                btn.innerHTML = 'Kaydediliyor...';
+                
                 // Renk ayarlarını kaydet
                 localStorage.setItem('subjectColors', JSON.stringify(window.subjectColors));
                 
-                // YENİ: Görüntü (Sütun/Satır) ayarını kaydet
+                // Görüntü (Sütun/Satır) ayarını kaydet
                 const selectedLayout = document.querySelector('input[name="settingLayout"]:checked').value;
                 localStorage.setItem('plannerLayout', selectedLayout);
-                window.plannerLayout = selectedLayout; // Uygulamanın diğer yerlerinde okuyabilmemiz için global değişkene yaz
+                window.plannerLayout = selectedLayout; 
                 
-                window.hasUnsavedColorChanges = false; 
+                window.hasUnsavedColorChanges = false;
+                
+                await window.saveGlobalSettings(); // BULUTA KAYDET
+                
                 plannerSettingsModal.style.display = 'none';
+                btn.innerHTML = origHTML;
                 
                 if (typeof updateWeeklyPlannerView === 'function') updateWeeklyPlannerView();
                 if (typeof renderTodayTasks === 'function') renderTodayTasks();
@@ -9941,17 +10109,18 @@
             window.renderFilterModalSubjects(); 
         };
 
-        window.applyFilters = function() {
+        window.applyFilters = async function() {
             document.getElementById('plannerFilterModal').style.display = 'none';
+            
+            await window.saveGlobalSettings(); // BULUTA KAYDET
+            
             if (typeof updateWeeklyPlannerView === 'function') updateWeeklyPlannerView();
             if (typeof renderTodayTasks === 'function') renderTodayTasks();
             
             const filterBtn = document.getElementById('openPlannerFilterBtn');
             const clearBtn = document.getElementById('clearPlannerFilterBtn');
-            
             if (filterBtn) {
                 if (window.filteredSubjects.length > 0) {
-                    // Filtre Aktif (Sağ tarafı düzleşsin, çarpı yanına yapışsın)
                     filterBtn.style.backgroundColor = '#007bff';
                     filterBtn.style.color = '#fff';
                     filterBtn.style.borderColor = '#007bff';
@@ -9959,7 +10128,6 @@
                     filterBtn.style.borderBottomRightRadius = '0';
                     if(clearBtn) clearBtn.style.display = 'flex';
                 } else {
-                    // Filtre Pasif (Normal tekli oval buton haline dönsün)
                     filterBtn.style.backgroundColor = '#f8f9fa';
                     filterBtn.style.color = '#495057';
                     filterBtn.style.borderColor = '#e2e6ea';
@@ -9970,10 +10138,10 @@
             }
         };
 
-        window.clearFilters = function() {
+        window.clearFilters = async function() {
             window.filteredSubjects = [];
             window.renderFilterModalSubjects();
-            window.applyFilters();
+            await window.applyFilters(); // Bu da artık sıfırlamayı otomatik buluta kaydeder
         };
 
         // Filtre Butonuna Tıklama Olayı (Butonun çalışmasını sağlayan motor)
@@ -10490,6 +10658,37 @@
             <a href="#" class="menu-item"><i class="fa-solid fa-gear"></i> Ayarlar</a>
         </div>
     </div>
+
+    <script>
+        function applySmartScale() {
+            const screenW = window.innerWidth;
+            
+            // Reklamlar (160x2) + Kenar boşlukları = Güvenli alan için 380px pay bırakıyoruz
+            let scale = (screenW - 380) / 1400; 
+
+            // Sadece ortadaki ana site elemanlarını seç (Reklamlara ve açılan Modallara dokunmaz!)
+            const centerElements = document.querySelectorAll('.header, .middle-section, .main-content');
+
+            if (screenW > 900) {
+                if (scale > 1) scale = 1; // Sadece daralmaya (küçülmeye) izin ver
+                
+                // Ana siteyi hesaplanan oranda küçült
+                centerElements.forEach(el => {
+                    el.style.zoom = scale;
+                });
+                
+            } else {
+                // Telefondaysak veya ekran çok darsa orijinal boyuta dön (CSS zaten reklamları gizliyor)
+                centerElements.forEach(el => {
+                    el.style.zoom = 1;
+                });
+            }
+        }
+
+        window.addEventListener('resize', applySmartScale);
+        window.addEventListener('DOMContentLoaded', applySmartScale);
+        applySmartScale();
+    </script>
 
 </body>
 </html>
