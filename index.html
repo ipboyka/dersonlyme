@@ -1285,6 +1285,20 @@
             setTimeout(() => { document.getElementById('indexLoader').classList.add('hidden'); }, 300);
         });
 
+        // --- YENİ: BAŞKA SAYFADAN GELEN GİZLİ EMRİ OKU VE OTOMATİK MODAL AÇ ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+
+            if (action === 'login') {
+                // Sayfa yüklendikten hemen sonra şık bir şekilde Giriş modalını aç
+                setTimeout(() => { openLogin(); }, 400); 
+            } else if (action === 'register') {
+                // Sayfa yüklendikten hemen sonra şık bir şekilde Kayıt modalını aç
+                setTimeout(() => { openRegister(); }, 400);
+            }
+        });
+
         // --- GOOGLE BUTONLARINI ÇALIŞTIRMA ---
         document.querySelectorAll('.google-btn').forEach(btn => {
             btn.addEventListener('click', async () => {

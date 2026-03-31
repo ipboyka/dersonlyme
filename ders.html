@@ -131,10 +131,13 @@
             gap: 12px;
             cursor: pointer; 
             transition: transform 0.2s ease;
+            position: absolute; /* YENİ: Logoyu sistemden koparıp zorla merkeze alır */
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .logo-container:hover {
-            transform: scale(1.02);
+            transform: translateX(-50%) scale(1.02); /* YENİ: Üstüne gelince büyürken sola kaymasını engeller */
         }
 
         .logo-icon {
@@ -155,6 +158,60 @@
             font-weight: 700;
             color: #333;
             letter-spacing: 0.5px;
+        }
+
+        /* --- HEADER GİRİŞ / PROFİL BUTONLARI --- */
+        .btn-outline {
+            background-color: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-outline:hover {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .header-icon-btn {
+            background: #f8f9fa;
+            color: #555;
+            border: 1px solid #eef2f5;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .header-icon-btn:hover {
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
         }
 
         /* --- SAĞ KISIM: Menü Butonu --- */
@@ -1617,6 +1674,15 @@
             .countdown-container {
                 width: 100%; /* Sayaç mobilde tam genişlik alır */
             }
+            /* YENİ EKLENEN KISIM: Telefondaysa merkez kilidini kırıp normal alt alta akışına döndürür */
+            .logo-container {
+                position: relative;
+                left: auto;
+                transform: none;
+            }
+            .logo-container:hover {
+                transform: scale(1.02);
+            }
             .custom-date-section {
                 grid-template-columns: 1fr; /* Başlangıç ve Bitiş tarihlerini alt alta alır */
             }
@@ -2418,10 +2484,14 @@
             <h1 class="logo-text">Ders Planlayıcı</h1>
         </div>
 
-        <button class="menu-btn" title="Menü">
-            <span class="menu-text">Menü</span>
-            <i class="fa-solid fa-bars"></i>
-        </button>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div id="headerAuthContainer" style="display: flex; align-items: center; gap: 10px;"></div>
+            
+            <button class="menu-btn" title="Menü">
+                <span class="menu-text">Menü</span>
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
 
     </header>
 
@@ -2997,12 +3067,13 @@
                         <div style="font-weight: 800; color: #0056b3; font-size: 13px;" id="pss-text"><i class="fa-solid fa-list-check"></i> 0 Video Eklendi</div>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <span style="color: #888; font-weight: 800; font-size: 11px;">Hız:</span>
-                            <div id="customSpeedSelector" style="display: flex; gap: 2px; background: #fff; padding: 3px; border-radius: 8px; border: 1px solid #cce5ff;">
+                            <div id="customSpeedSelector" style="display: flex; gap: 2px; background: #fff; padding: 3px; border-radius: 8px; border: 1px solid #cce5ff; align-items: center;">
                                 <div class="speed-opt active" data-val="1">1x</div>
                                 <div class="speed-opt" data-val="1.25">1.25x</div>
                                 <div class="speed-opt" data-val="1.5">1.5x</div>
                                 <div class="speed-opt" data-val="1.75">1.75x</div>
                                 <div class="speed-opt" data-val="2">2x</div>
+                                <input type="text" id="customSpeedInput" placeholder="Özel" style="width: 45px; padding: 3px; border: 1px solid #cce5ff; border-radius: 6px; font-size: 11px; font-weight: 700; color: #007bff; text-align: center; outline: none; margin-left: 2px; background: #f8fbff; cursor: pointer; transition: 0.2s;">
                             </div>
                         </div>
                     </div>
@@ -3875,8 +3946,8 @@
         // =================================================================
         // YENİ: collection ve getDocs eklendi
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut, updatePassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAKpk8odLUEZTJh_4qvyrcu59t4eoNNIe8",
@@ -4462,6 +4533,18 @@
 
             if (user) {
                 currentUserUid = user.uid;
+
+                // YAN MENÜ KONTROLÜ (GİRİŞ YAPILDI)
+                if(document.getElementById('sideMenuProfileBtn')) document.getElementById('sideMenuProfileBtn').style.display = '';
+                if(document.getElementById('sideMenuLoginBtn')) document.getElementById('sideMenuLoginBtn').style.display = 'none';
+                if(document.getElementById('sideMenuRegisterBtn')) document.getElementById('sideMenuRegisterBtn').style.display = 'none';
+
+                // YENİ: Başarıyla giriş yapmışsa Profil ve Ayarlar butonlarını göster
+                document.getElementById('headerAuthContainer').innerHTML = `
+                    <button class="header-icon-btn" id="headerProfileBtn" onclick="window.openProfileModal()"><i class="fa-solid fa-user"></i> Profil</button>
+                    <button class="header-icon-btn" id="headerSettingsBtn"><i class="fa-solid fa-gear"></i> Ayarlar</button>
+                `;
+
                 try {
                     // 1. Notları Çek
                     const userDocRef = doc(db, "users", user.uid);
@@ -4529,6 +4612,18 @@
             } else {
                 // Giriş yapmamış kullanıcı (Görevler temizlendi)
                 currentUserUid = null;
+
+                // YAN MENÜ KONTROLÜ (ÇIKIŞ YAPILDI)
+                if(document.getElementById('sideMenuProfileBtn')) document.getElementById('sideMenuProfileBtn').style.display = 'none';
+                if(document.getElementById('sideMenuLoginBtn')) document.getElementById('sideMenuLoginBtn').style.display = '';
+                if(document.getElementById('sideMenuRegisterBtn')) document.getElementById('sideMenuRegisterBtn').style.display = '';
+
+                // YENİ: Yönlendirme adreslerinin sonuna gizli "action" notu eklendi
+                document.getElementById('headerAuthContainer').innerHTML = `
+                    <button class="btn-outline" onclick="window.location.href='index.html?action=login'">Giriş Yap</button>
+                    <button class="btn-primary" onclick="window.location.href='index.html?action=register'">Kaydol</button>
+                `;
+
                 savedNotes = [];
                 userTasks = {}; // Çıkış yapıldığında görevleri de sıfırla
                 notesList.innerHTML = '<div class="placeholder-text">Notlarınızı görmek için giriş yapın...</div>';
@@ -6798,59 +6893,79 @@
         document.getElementById('closeViewTaskBtn').addEventListener('click', () => viewTaskModal.style.display = 'none');
 
         document.getElementById('editTaskBtn').addEventListener('click', () => {
-            if (!currentViewingTask) return;
-            
-            editingTaskId = currentViewingTask.id;
-            viewTaskModal.style.display = 'none';
-            
-            document.querySelector('#addTaskModal h3').innerHTML = `<i class="fa-solid fa-pen" style="color:#007bff; margin-right:8px;"></i> Görevi Düzenle`;
-            document.getElementById('deleteTaskBtn').style.display = 'block';
+        if (!currentViewingTask) return;
+        editingTaskId = currentViewingTask.id;
+        viewTaskModal.style.display = 'none';
+        document.querySelector('#addTaskModal h3').innerHTML = `<i class="fa-solid fa-pen" style="color:#007bff; margin-right:8px;"></i> Görevi Düzenle`;
+        document.getElementById('deleteTaskBtn').style.display = 'block';
 
-            setTaskCustomSelectValue('tcs-examType', currentViewingTask.examType);
-            
-            if(currentViewingTask.examType === 'ayt') {
-                document.getElementById('taskTrackGroup').style.display = 'flex';
-                if(currentViewingTask.track) setTaskCustomSelectValue('tcs-track', currentViewingTask.track);
-            } else {
-                document.getElementById('taskTrackGroup').style.display = 'none';
+        setTaskCustomSelectValue('tcs-examType', currentViewingTask.examType);
+        if(currentViewingTask.examType === 'ayt') {
+            document.getElementById('taskTrackGroup').style.display = 'flex';
+            if(currentViewingTask.track) setTaskCustomSelectValue('tcs-track', currentViewingTask.track);
+        } else {
+            document.getElementById('taskTrackGroup').style.display = 'none';
+        }
+        updateTaskSubjectDropdown();
+        taskDesc.value = currentViewingTask.desc;
+        taskDuration.value = currentViewingTask.duration;
+        
+        // YENİ: Düzenle butonuna basıldığı an hızı okuyup görseli (butonları/kutuyu) KESİN olarak ayarlıyoruz!
+        currentTaskSpeed = currentViewingTask.taskSpeed || 1;
+        document.querySelectorAll('.speed-opt').forEach(btn => btn.classList.remove('active'));
+        const customInput = document.getElementById('customSpeedInput');
+        const defaultBtn = document.querySelector(`.speed-opt[data-val="${currentTaskSpeed}"]`);
+        if(defaultBtn) {
+            defaultBtn.classList.add('active');
+            if(customInput) {
+                customInput.value = '';
+                customInput.style.background = '#f8fbff';
+                customInput.style.color = '#007bff';
+            }
+        } else {
+            if(customInput) {
+                customInput.value = currentTaskSpeed + 'x';
+                customInput.style.background = '#007bff';
+                customInput.style.color = '#fff';
+            }
+        }
+        window.renderTaskVideoSummary(); // Görseli hemen güncelle
+        
+        setTimeout(() => {
+            setTaskCustomSelectValue('tcs-subject', currentViewingTask.subject);
+            checkGenelDenemeLock();
+            if(currentViewingTask.subject !== 'Genel Deneme') {
+                setTaskCustomSelectValue('tcs-taskType', currentViewingTask.taskType);
             }
             
-            updateTaskSubjectDropdown();
-            
-            taskDesc.value = currentViewingTask.desc;
-            taskDuration.value = currentViewingTask.duration;
+            // Soru sayısını kutuya aktar (İçeri alındı çünkü taskType güncellemesi kutuyu gizleyebiliyordu)
+            const qcGroup = document.getElementById('taskQuestionCountGroup');
+            if (currentViewingTask.taskType === 'Test Çözümü' || currentViewingTask.taskType === 'Deneme Çözümü' || currentViewingTask.taskType === 'Genel Deneme') {
+                qcGroup.style.display = 'flex';
+                document.getElementById('taskQuestionCount').value = currentViewingTask.questionCount || '';
+            } else {
+                qcGroup.style.display = 'none';
+                document.getElementById('taskQuestionCount').value = '';
+            }
 
-            setTimeout(() => {
-                setTaskCustomSelectValue('tcs-subject', currentViewingTask.subject);
-                checkGenelDenemeLock();
-                if(currentViewingTask.subject !== 'Genel Deneme') {
-                    setTaskCustomSelectValue('tcs-taskType', currentViewingTask.taskType);
-                }
-
-                // Soru sayısını kutuya aktar (İçeri alındı çünkü taskType güncellemesi kutuyu gizleyebiliyordu)
-                const qcGroup = document.getElementById('taskQuestionCountGroup');
-                if (currentViewingTask.taskType === 'Test Çözümü' || currentViewingTask.taskType === 'Deneme Çözümü' || currentViewingTask.taskType === 'Genel Deneme') {
-                    qcGroup.style.display = 'flex';
-                    document.getElementById('taskQuestionCount').value = currentViewingTask.questionCount || '';
-                } else {
-                    qcGroup.style.display = 'none';
-                    document.getElementById('taskQuestionCount').value = '';
-                }
-            }, 10);
-
-            // Değişiklik Dedektifine Soru Sayısını da Öğrettik
-            originalTaskEditState = {
-                examType: currentViewingTask.examType,
-                track: currentViewingTask.track || 'sayisal',
-                subject: currentViewingTask.subject,
-                taskType: currentViewingTask.taskType,
-                desc: currentViewingTask.desc,
-                duration: currentViewingTask.duration.toString(),
-                questionCount: currentViewingTask.questionCount ? currentViewingTask.questionCount.toString() : ''
-            };
-
+            // ÇÖZÜM: Modal'ı her şey yerli yerine oturduktan ve fazlalıklar gizlendikten SONRA açıyoruz!
             addTaskModal.style.display = 'flex';
-        });
+        }, 10);
+        
+        // YENİ: Değişiklik Dedektifine HIZIN İLK HALİNİ de öğrettik ki değişince fark etsin
+        originalTaskEditState = { 
+            examType: currentViewingTask.examType,
+            track: currentViewingTask.track || 'sayisal',
+            subject: currentViewingTask.subject,
+            taskType: currentViewingTask.taskType,
+            desc: currentViewingTask.desc,
+            duration: currentViewingTask.duration.toString(),
+            questionCount: currentViewingTask.questionCount ? currentViewingTask.questionCount.toString() : '',
+            taskSpeed: currentViewingTask.taskSpeed || 1 
+        };
+        
+        // En alttaki addTaskModal.style.display = 'flex'; satırını buradan sildik.
+    });
 
         window.openTaskModalForDate = function(dateStr) {
             selectedDateForTask = dateStr;
@@ -6861,9 +6976,12 @@
             document.getElementById('deleteTaskBtn').style.display = 'none';
 
             setTaskCustomSelectValue('tcs-examType', 'tyt');
-            document.getElementById('taskTrackGroup').style.display = 'none'; 
-            updateTaskSubjectDropdown();
+            document.getElementById('taskTrackGroup').style.display = 'none';
+            
+            // ÇÖZÜM: Önce varsayılan türü seçiyoruz, SONRA dersleri güncelliyoruz 
+            // ki "Genel Deneme" kilidi çalışıp bunu tekrar ezebilsin!
             setTaskCustomSelectValue('tcs-taskType', 'Konu Anlatımı');
+            updateTaskSubjectDropdown();
             
             taskDesc.value = '';
             taskDuration.value = '';
@@ -6881,10 +6999,13 @@
             if (taskDesc.value.trim() !== originalTaskEditState.desc) return true;
             if (taskDuration.value !== originalTaskEditState.duration) return true;
             
-            // YENİ: Soru sayısındaki değişimi yakala!
+            // Soru sayısındaki değişimi yakala!
             const currentQc = document.getElementById('taskQuestionCount').value;
             if (currentQc !== originalTaskEditState.questionCount) return true;
-
+            
+            // YENİ: Hız değişimini yakala ki dedektif kaydetme işlemini iptal etmesin!
+            if (currentTaskSpeed !== originalTaskEditState.taskSpeed) return true;
+            
             return false;
         }
 
@@ -7026,7 +7147,8 @@
                 desc: taskDesc.value.trim(),
                 duration: parseInt(taskDuration.value),
                 dateKey: selectedDateForTask,
-                taskVideos: currentTaskVideos
+                taskVideos: currentTaskVideos,
+                taskSpeed: currentTaskSpeed // YENİ: Seçili hızı veritabanına kaydeder
             };
 
             try {
@@ -8153,15 +8275,71 @@
         let currentSelectingPlaylistId = null;
         let selectedVideosForTaskIndices = new Set();
         
-        // Hız seçici animasyonları ve dinleyicisi
+        // Hazır Hız Butonları Dinleyicisi
         document.querySelectorAll('.speed-opt').forEach(opt => {
             opt.addEventListener('click', (e) => {
                 document.querySelectorAll('.speed-opt').forEach(btn => btn.classList.remove('active'));
                 e.target.classList.add('active');
                 currentTaskSpeed = parseFloat(e.target.getAttribute('data-val'));
-                window.renderTaskVideoSummary(); // Hız değişince matematiği anında baştan yap!
+                
+                // Hazır butona tıklanınca özel kutuyu sıfırla ve rengini eski haline getir
+                const customInput = document.getElementById('customSpeedInput');
+                if(customInput) {
+                    customInput.value = ''; 
+                    customInput.style.background = '#f8fbff';
+                    customInput.style.color = '#007bff';
+                }
+                
+                window.renderTaskVideoSummary(true); 
             });
         });
+
+        // ÖZEL HIZ GİRİŞİ DİNLEYİCİSİ VE BUTON GÖRÜNÜMÜ
+        const customSpeedInput = document.getElementById('customSpeedInput');
+        if (customSpeedInput) {
+            
+            // Kutuya tıklandığında (odaklanıldığında) 'x' harfini sil ki kolayca sayı yazılabilsin
+            customSpeedInput.addEventListener('focus', (e) => {
+                e.target.value = e.target.value.replace('x', '');
+                document.querySelectorAll('.speed-opt').forEach(btn => btn.classList.remove('active'));
+                
+                // Kendisini aktif buton gibi renklendir (Mavi arka plan, beyaz yazı)
+                e.target.style.background = '#007bff';
+                e.target.style.color = '#fff';
+            });
+
+            // Değer girilip enter'a basılınca veya boşluğa tıklanınca
+            customSpeedInput.addEventListener('change', (e) => {
+                // Kullanıcı virgül girerse noktaya çevir ve 'x' varsa temizle
+                let rawVal = e.target.value.replace('x', '').replace(',', '.');
+                let val = parseFloat(rawVal);
+                
+                // Hatalı veya 0'dan küçük giriş varsa kutuyu sıfırla
+                if (isNaN(val) || val <= 0) {
+                    e.target.value = '';
+                    e.target.style.background = '#f8fbff';
+                    e.target.style.color = '#007bff';
+                    return;
+                }
+                
+                // Yuvarlama matematiği (2.57 -> 2.60)
+                let centVal = Math.round(val * 100); 
+                val = Math.ceil(centVal / 5) * 0.05; 
+                val = parseFloat(val.toFixed(2));
+                
+                // Sayının sonuna 'x' ekleyerek buton görünümünü tamamla
+                e.target.value = val + 'x'; 
+                
+                // Diğer butonların aktifliğini kaldır
+                document.querySelectorAll('.speed-opt').forEach(btn => btn.classList.remove('active'));
+                // Kendini aktif buton renginde tut
+                e.target.style.background = '#007bff';
+                e.target.style.color = '#fff';
+                
+                currentTaskSpeed = val;
+                window.renderTaskVideoSummary(true); 
+            });
+        }
 
         // YENİ: Buton görünürlüğünü KESİN olarak kontrol eden merkezi motor
         window.updatePlaylistButtonVisibility = function() {
@@ -8185,36 +8363,65 @@
             }
         });
 
-        // Kutu Açıldığında Verileri Sıfırlama ve Butonu Kontrol Etme
+        // Yeni Görev Ekleme Butonuna Basıldığında (Her Şeyi Sıfırla)
         const originalOpenTaskModal = window.openTaskModalForDate;
         window.openTaskModalForDate = function(dateStr) {
             if(originalOpenTaskModal) originalOpenTaskModal(dateStr);
+            
             currentTaskVideos = [];
             currentTaskSpeed = 1;
+            
             document.querySelectorAll('.speed-opt').forEach(btn => btn.classList.remove('active'));
             document.querySelector('.speed-opt[data-val="1"]')?.classList.add('active');
-            window.renderTaskVideoSummary();
             
-            // Modal açıldığında görev türü neyse ona göre butonu göster/gizle
+            const customInput = document.getElementById('customSpeedInput');
+            if(customInput) {
+                customInput.value = ''; 
+                customInput.style.background = '#f8fbff';
+                customInput.style.color = '#007bff';
+            }
+            
+            window.renderTaskVideoSummary(); 
             setTimeout(window.updatePlaylistButtonVisibility, 50);
         };
 
+        // Var Olan Görevin Detayına / Düzenlemesine Girildiğinde (Hafızayı Getir)
         const originalViewTaskDetails = window.viewTaskDetails;
         window.viewTaskDetails = function(dateKey, taskId) {
             if(originalViewTaskDetails) originalViewTaskDetails(dateKey, taskId);
             
-            // Edit modunda önceden eklenmiş videoları geri yükle
             if (currentViewingTask && currentViewingTask.taskVideos) {
                 currentTaskVideos = [...currentViewingTask.taskVideos];
             } else {
                 currentTaskVideos = [];
             }
-            currentTaskSpeed = 1;
-            document.querySelectorAll('.speed-opt').forEach(btn => btn.classList.remove('active'));
-            document.querySelector('.speed-opt[data-val="1"]')?.classList.add('active');
-            window.renderTaskVideoSummary();
             
-            // Görev detayına bakıldığında görev türü neyse ona göre butonu göster/gizle
+            // YENİ: Görevin içine kaydettiğimiz hızı okuyoruz (Yoksa varsayılan 1 olur)
+            currentTaskSpeed = currentViewingTask.taskSpeed || 1; 
+            
+            // Tüm aktiflikleri temizle
+            document.querySelectorAll('.speed-opt').forEach(btn => btn.classList.remove('active'));
+            const customInput = document.getElementById('customSpeedInput');
+            
+            // Kayıtlı hız 1, 1.5, 2 gibi hazır butonlardan biriyse onu mavi yap
+            const defaultBtn = document.querySelector(`.speed-opt[data-val="${currentTaskSpeed}"]`);
+            if(defaultBtn) {
+                defaultBtn.classList.add('active');
+                if(customInput) {
+                    customInput.value = '';
+                    customInput.style.background = '#f8fbff';
+                    customInput.style.color = '#007bff';
+                }
+            } else {
+                // Hazır buton değilse (Örn: 2.7 veya 3) özel kutuyu mavi yap ve içine değeri "x" ile yaz
+                if(customInput) {
+                    customInput.value = currentTaskSpeed + 'x';
+                    customInput.style.background = '#007bff';
+                    customInput.style.color = '#fff';
+                }
+            }
+            
+            window.renderTaskVideoSummary(); 
             setTimeout(window.updatePlaylistButtonVisibility, 50);
         };
 
@@ -8529,12 +8736,12 @@
                 if(currentUserUid) await setDoc(doc(db, "users", currentUserUid, "userPlaylists", pl.id.toString()), pl, { merge: true });
             } catch(e) {}
 
-            window.renderTaskVideoSummary();
+            window.renderTaskVideoSummary(true);
             document.getElementById('selectVideoModal').style.display = 'none';
         });
 
         // Ekrana Çizme ve Hız Matematiği
-        window.renderTaskVideoSummary = function() {
+        window.renderTaskVideoSummary = function(isUserAction = false) {
             const summaryBox = document.getElementById('playlistSelectionSummary');
             const videoListDiv = document.getElementById('pss-video-list');
             const descInput = document.getElementById('taskDesc');
@@ -8548,7 +8755,7 @@
             }
 
             summaryBox.style.display = 'block';
-            document.getElementById('pss-text').innerHTML = `<i class="fa-solid fa-list-check"></i> Toplam <b>${currentTaskVideos.length}</b> Video Plana Eklendi`;
+            document.getElementById('pss-text').innerHTML = `<i class="fa-solid fa-list-check"></i> Toplam <b>${currentTaskVideos.length}</b> Video`;
 
             videoListDiv.innerHTML = '';
             let totalBaseSeconds = 0;
@@ -8580,13 +8787,20 @@
             
             document.getElementById('pss-duration').innerHTML = `${timeStr}`;
 
-            // Kutuya öneri olarak otomatik yaz
-            if (descInput) {
-                const plNames = [...new Set(currentTaskVideos.map(v => v.plTitle || "Playlist"))];
-                descInput.value = `"${plNames.join(', ')}" listesinden ${currentTaskVideos.length} adet video eklendi.`;
-            }
-            if (durInput) {
-                durInput.value = minutes;
+            // YENİ: Kullanıcının özel yazdığı açıklamanın veya sürenin üzerine yazmayı engellemek için akıllı kontrol
+            if (isUserAction) {
+                if (descInput) {
+                    const plNames = [...new Set(currentTaskVideos.map(v => v.plTitle || "Playlist"))];
+                    const autoText = `"${plNames.join(', ')}" listesinden ${currentTaskVideos.length} adet video eklendi.`;
+                    
+                    // Sadece kutu boşsa veya zaten sistemin otomatik yazdığı bir metinse ez! (Özel yazıyı korur)
+                    if (descInput.value.trim() === '' || descInput.value.includes('adet video eklendi.')) {
+                        descInput.value = autoText;
+                    }
+                }
+                if (durInput) {
+                    durInput.value = minutes; // Süreyi güncelle
+                }
             }
         };
 
@@ -8602,7 +8816,7 @@
                     if(currentUserUid) await setDoc(doc(db, "users", currentUserUid, "userPlaylists", pl.id.toString()), pl, { merge: true });
                 } catch(e) {}
             }
-            window.renderTaskVideoSummary();
+            window.renderTaskVideoSummary(true);
         };
 
         // Kapatma ve Geri Dönme İşlevleri
@@ -10643,6 +10857,141 @@
             btn.style.opacity = '1';
         };
 
+        // ==========================================
+        // --- PROFİL EKRANI VE KAYIT MOTORU ---
+        // ==========================================
+        const profileModal = document.getElementById('profileModal');
+        const profRoleRadios = document.querySelectorAll('input[name="profEditRole"]');
+        const profExamRadios = document.querySelectorAll('input[name="profEditExam"]');
+        const profUpdateMsg = document.getElementById('profileUpdateMsg');
+
+        // Modalı Aç ve Verileri Firebase'den Çek
+        window.openProfileModal = async function() {
+            if (!auth.currentUser) return;
+            
+            profUpdateMsg.style.display = 'none'; 
+            document.getElementById('profEditPassword').value = ''; 
+            document.getElementById('saveProfileBtn').innerText = 'Değişiklikleri Kaydet';
+
+            try {
+                // Sisteme giriş yapmış adamın verilerini Firestore'dan al
+                const userSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
+                
+                if (userSnap.exists()) {
+                    const data = userSnap.data();
+                    
+                    document.getElementById('profEditUsername').value = data.username || auth.currentUser.displayName || '';
+                    document.getElementById('profEditEmail').value = auth.currentUser.email || '';
+                    
+                    if(data.role) document.querySelector(`input[name="profEditRole"][value="${data.role}"]`).checked = true;
+                    if(data.exam && data.role === 'ogrenci') {
+                        document.querySelector(`input[name="profEditExam"][value="${data.exam}"]`).checked = true;
+                    }
+                    if(data.field) document.getElementById('profEditFieldSelect').value = data.field;
+                    
+                    updateProfileDynamicUI(); // Sınav/Alan göstergizle mantığını tetikle
+                    
+                    profileModal.style.display = 'flex';
+                    
+                    // Eğer sağ menü açıksa onu arkada kibarca kapat
+                    const sideMenu = document.getElementById('sideMenu');
+                    if(sideMenu && sideMenu.classList.contains('open')) sideMenu.classList.remove('open');
+                }
+            } catch(e) { console.error("Profil verisi çekilemedi:", e); }
+        };
+
+        // Dinamik Göster/Gizle (Öğrenciyse Sınav aç, YKS ise Alan aç)
+        function updateProfileDynamicUI() {
+            const role = document.querySelector('input[name="profEditRole"]:checked')?.value;
+            const exam = document.querySelector('input[name="profEditExam"]:checked')?.value;
+
+            document.getElementById('profEditExamGroup').style.display = (role === 'ogrenci') ? 'block' : 'none';
+            document.getElementById('profEditFieldGroup').style.display = (role === 'ogrenci' && exam === 'yks') ? 'block' : 'none';
+        }
+
+        profRoleRadios.forEach(radio => radio.addEventListener('change', updateProfileDynamicUI));
+        profExamRadios.forEach(radio => radio.addEventListener('change', updateProfileDynamicUI));
+
+        // Kapatma Butonu
+        document.getElementById('closeProfileBtn').addEventListener('click', () => { profileModal.style.display = 'none'; });
+
+        function showProfMsg(text, type) {
+            profUpdateMsg.innerText = text;
+            profUpdateMsg.style.display = 'block';
+            profUpdateMsg.style.backgroundColor = type === 'error' ? '#fdeea' : '#e8f8f5';
+            profUpdateMsg.style.color = type === 'error' ? '#e74c3c' : '#2ecc71';
+            profUpdateMsg.style.border = type === 'error' ? '1px solid #fadbd8' : '1px solid #d1f2eb';
+        }
+
+        // --- PROFİLİ KAYDETME MANTIĞI ---
+        document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('saveProfileBtn');
+            const newUsername = document.getElementById('profEditUsername').value.trim();
+            const newPassword = document.getElementById('profEditPassword').value;
+            const role = document.querySelector('input[name="profEditRole"]:checked')?.value;
+            const exam = document.querySelector('input[name="profEditExam"]:checked')?.value;
+            const field = document.getElementById('profEditFieldSelect').value;
+
+            // 1. Basit Hata Kontrolleri
+            if(!newUsername) return showProfMsg("Kullanıcı adı boş bırakılamaz!", "error");
+            if (newUsername.includes(' ')) return showProfMsg("Kullanıcı adı boşluk içeremez!", "error");
+            if (role === 'ogrenci' && !exam) return showProfMsg("Lütfen sınavı seçin.", "error");
+            if (role === 'ogrenci' && exam === 'yks' && !field) return showProfMsg("Lütfen alanınızı seçin.", "error");
+
+            try {
+                btn.innerText = 'Kaydediliyor...';
+                const userDocRef = doc(db, "users", auth.currentUser.uid);
+                const currentData = (await getDoc(userDocRef)).data();
+
+                // 2. Kullanıcı Adı Başkası Tarafından Alınmış mı Kontrolü
+                if (newUsername !== currentData.username) {
+                    const q = query(collection(db, "users"), where("username", "==", newUsername));
+                    if (!(await getDocs(q)).empty) {
+                        btn.innerText = 'Değişiklikleri Kaydet';
+                        return showProfMsg("Bu kullanıcı adı zaten alınmış!", "error");
+                    }
+                    await updateProfile(auth.currentUser, { displayName: newUsername });
+                }
+
+                // 3. Şifre Değiştirilecekse (Boş bırakılmadıysa)
+                if (newPassword) {
+                    if (newPassword.length < 6) {
+                        btn.innerText = 'Değişiklikleri Kaydet';
+                        return showProfMsg("Şifre en az 6 karakter olmalıdır!", "error");
+                    }
+                    await updatePassword(auth.currentUser, newPassword);
+                }
+
+                // 4. Firestore Veritabanını Güncelle
+                const updateData = { username: newUsername, role: role };
+                if (role === 'ogrenci') {
+                    updateData.exam = exam;
+                    updateData.field = (exam === 'yks') ? field : null;
+                } else {
+                    updateData.exam = null; updateData.field = null;
+                }
+
+                await setDoc(userDocRef, updateData, { merge: true });
+                
+                // Menüdeki ismi dinamik değiştir (eğer "Profil" yerine isim yazıyorsa)
+                const currentHeaderBtn = document.getElementById('headerProfileBtn');
+                if(currentHeaderBtn) currentHeaderBtn.innerHTML = `<i class="fa-solid fa-user"></i> ${newUsername}`;
+                
+                showProfMsg("Profil başarıyla güncellendi!", "success");
+                setTimeout(() => { profileModal.style.display = 'none'; }, 1500);
+
+            } catch (error) {
+                // Güvenlik gereği uzun süre girişli kalınca Firebase şifre değiştirtmez.
+                if (error.code === 'auth/requires-recent-login') {
+                    showProfMsg("Şifrenizi değiştirmek için çıkış yapıp tekrar girmelisiniz.", "error");
+                } else {
+                    showProfMsg("Hata: " + error.message, "error");
+                }
+            } finally {
+                btn.innerText = 'Değişiklikleri Kaydet';
+            }
+        });
+
     </script>
 
     <div class="menu-overlay" id="menuOverlay"></div>
@@ -10653,9 +11002,16 @@
         </div>
         <div class="side-menu-content">
             <a href="#" id="goHomeBtn" class="menu-item"><i class="fa-solid fa-house"></i> Ana Sayfa</a>
-            <a href="#" class="menu-item" id="openPlaylistsBtn"><i class="fa-brands fa-youtube" style="font-size: 18px;"></i> Playlistler</a>
+            <a href="#" class="menu-item" id="openPlaylistsBtn"><i class="fa-brands fa-youtube"></i> Playlistler</a>
             <a href="#" class="menu-item"><i class="fa-solid fa-chart-pie"></i> İstatistikler</a>
-            <a href="#" class="menu-item"><i class="fa-solid fa-gear"></i> Ayarlar</a>
+            
+            <a href="#" class="menu-item" id="sideMenuProfileBtn" onclick="window.openProfileModal()"><i class="fa-solid fa-user"></i> Profil</a>
+            <a href="#" class="menu-item" id="sideMenuSettingsBtn"><i class="fa-solid fa-gear"></i> Ayarlar</a>
+            
+            <div style="display: flex; gap: 8px; width: 100%;">
+                <a href="index.html?action=login" class="menu-item" id="sideMenuLoginBtn" style="display: none; flex: 1; justify-content: center; padding-left: 0; padding-right: 0; font-size: 14px; color: #007bff;"><i class="fa-solid fa-right-to-bracket"></i> Giriş Yap</a>
+                <a href="index.html?action=register" class="menu-item" id="sideMenuRegisterBtn" style="display: none; flex: 1; justify-content: center; padding-left: 0; padding-right: 0; font-size: 14px; color: #007bff;"><i class="fa-solid fa-user-plus"></i> Kaydol</a>
+            </div>
         </div>
     </div>
 
@@ -10689,6 +11045,67 @@
         window.addEventListener('DOMContentLoaded', applySmartScale);
         applySmartScale();
     </script>
+
+    <div class="modal-overlay" id="profileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div class="modal" style="width: 90%; max-width: 500px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0; color: #2c3e50; font-size: 22px;"><i class="fa-solid fa-user-pen" style="color:#007bff; margin-right:8px;"></i> Profilim</h2>
+                <button id="closeProfileBtn" style="background: none; border: none; font-size: 26px; cursor: pointer; color: #95a5a6; transition: 0.2s;">&times;</button>
+            </div>
+
+            <div id="profileUpdateMsg" style="display: none; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; text-align: center; font-weight: 600;"></div>
+
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div>
+                    <label style="font-weight: 600; font-size: 14px; color: #34495e; display: block; margin-bottom: 5px;">Kullanıcı Adı</label>
+                    <input type="text" id="profEditUsername" style="width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 15px; outline: none;">
+                </div>
+                
+                <div>
+                    <label style="font-weight: 600; font-size: 14px; color: #34495e; display: block; margin-bottom: 5px;">E-posta <span style="font-size: 12px; color: #95a5a6;">(Değiştirilemez)</span></label>
+                    <input type="email" id="profEditEmail" disabled style="width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 15px; background: #f8f9fa; color: #7f8c8d; cursor: not-allowed;">
+                </div>
+
+                <div>
+                    <label style="font-weight: 600; font-size: 14px; color: #34495e; display: block; margin-bottom: 5px;">Yeni Şifre <span style="font-size: 12px; color: #95a5a6;">(Değiştirmek istemiyorsanız boş bırakın)</span></label>
+                    <input type="text" id="profEditPassword" placeholder="En az 6 karakter" style="width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 15px; outline: none;">
+                </div>
+
+                <div>
+                    <label style="font-weight: 600; font-size: 14px; color: #34495e; display: block; margin-bottom: 5px;">Hesap Türü</label>
+                    <div style="display: flex; gap: 15px;">
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="profEditRole" value="ogrenci"> Öğrenci</label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="profEditRole" value="mentor"> Mentor</label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="profEditRole" value="kurumsal"> Kurumsal</label>
+                    </div>
+                </div>
+
+                <div id="profEditExamGroup" style="display: none;">
+                    <label style="font-weight: 600; font-size: 14px; color: #34495e; display: block; margin-bottom: 5px;">Hazırlanılan Sınav</label>
+                    <div style="display: flex; gap: 15px;">
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="profEditExam" value="yks"> YKS</label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="profEditExam" value="lgs"> LGS</label>
+                    </div>
+                </div>
+
+                <div id="profEditFieldGroup" style="display: none;">
+                    <label style="font-weight: 600; font-size: 14px; color: #34495e; display: block; margin-bottom: 5px;">Alanınız</label>
+                    <select id="profEditFieldSelect" style="width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 15px; outline: none;">
+                        <option value="">Seçiniz...</option>
+                        <option value="msu">MSÜ</option>
+                        <option value="tyt">TYT</option>
+                        <option value="sayisal">Sayısal</option>
+                        <option value="esit_agirlik">Eşit Ağırlık</option>
+                        <option value="sozel">Sözel</option>
+                        <option value="belli_degil">Daha Belli Değil</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="saveProfileBtn" style="width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; margin-top: 25px; cursor: pointer; transition: 0.2s;">Değişiklikleri Kaydet</button>
+        </div>
+    </div>
 
 </body>
 </html>
