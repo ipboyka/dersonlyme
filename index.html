@@ -1541,6 +1541,11 @@
 
                     // Kullanıcı bulundu! Gizlice e-posta adresini veritabanından çekelim
                     loginEmail = querySnapshot.docs[0].data().email;
+                    
+                    // YENİ EKLENEN KONTROL: Veritabanında e-posta kısmı silinmiş veya boşsa Firebase çökmesin!
+                    if (!loginEmail) {
+                        return showError('loginError', "Bu profilin e-posta verisi eksik olduğu için giriş yapılamıyor. Lütfen doğrudan e-posta adresinizi yazarak girmeyi deneyin.");
+                    }
                 }
 
                 // Giriş yapmayı dener (Kullanıcı adı girildiyse bile üstte e-postaya çevirdik)

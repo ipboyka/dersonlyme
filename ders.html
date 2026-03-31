@@ -2423,6 +2423,97 @@
             }
         }
 
+        /* --- PROFIL MODALI ÖZEL TASARIMLAR (SWITCH VE SELECT) --- */
+        .compact-role-toggle {
+            display: flex;
+            background-color: #f4f7f6;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            padding: 4px;
+            height: 42px;
+            width: 100%;
+        }
+        .compact-role-toggle input[type="radio"] { display: none; }
+        .compact-role-toggle label {
+            flex: 1; text-align: center; font-size: 13px; font-weight: 700; color: #7f8c8d; cursor: pointer; border-radius: 6px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; margin-bottom: 0;
+        }
+        .compact-role-toggle input[type="radio"]:checked + label {
+            background-color: #007bff; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .custom-select-wrapper { position: relative; user-select: none; width: 100%; }
+        .custom-select-trigger {
+            display: flex; justify-content: space-between; align-items: center; padding: 0 12px; border: 1px solid #bdc3c7; border-radius: 8px; background-color: white; font-size: 14px; color: #333; cursor: pointer; transition: all 0.3s ease; height: 42px;
+        }
+        .custom-select-trigger.active { border-color: #007bff; box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+        .custom-select-trigger i { transition: transform 0.3s ease; }
+        .custom-select-trigger.active i { transform: rotate(180deg); }
+        .custom-options {
+            position: absolute; display: block; top: 100%; left: 0; right: 0; background-color: white; border: 1px solid #007bff; border-top: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; box-shadow: 0 8px 15px rgba(0,0,0,0.1); opacity: 0; visibility: hidden; pointer-events: none; z-index: 100; transition: all 0.2s ease; max-height: 200px; overflow-y: auto;
+        }
+        .custom-select-wrapper.open .custom-options { opacity: 1; visibility: visible; pointer-events: all; }
+        .custom-option { display: block; padding: 10px 12px; font-size: 14px; color: #333; cursor: pointer; transition: background-color 0.2s ease; }
+        .custom-option:hover { background-color: #f0f8ff; color: #007bff; font-weight: 600; }
+        .custom-option.selected { background-color: #007bff; color: white; font-weight: 600; }
+
+        /* --- PROFIL EKRANI YUMUŞAK AÇILIŞ ANİMASYONU --- */
+        @keyframes profOverlayFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes profBoxSlideUp {
+            from { opacity: 0; transform: translateY(35px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #profileModal {
+            animation: profOverlayFade 0.3s ease-out;
+        }
+
+        #profileModal .modal {
+            /* Aşağıdan yukarıya doğru 0.3 saniyede pürüzsüzce kayarak oturur */
+            animation: profBoxSlideUp 0.3s ease-out forwards; 
+        }
+
+        /* --- ÖZEL PROFİL BİLDİRİM BALONCUĞU TASARIMI --- */
+        .prof-alert-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center;
+            z-index: 100000; backdrop-filter: blur(4px); 
+            opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .prof-alert-overlay.show { 
+            opacity: 1; visibility: visible; 
+        }
+        .prof-alert-box {
+            background: #fff; width: 90%; max-width: 360px; border-radius: 16px; padding: 30px 25px;
+            text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            /* Başlangıçta 35px aşağıda durur */
+            transform: translateY(35px); 
+            /* Çok yumuşak ve akıcı bir yukarı kayma hızı */
+            transition: transform 0.3s ease-out; 
+        }
+        .prof-alert-overlay.show .prof-alert-box { 
+            /* Görünür olduğunda tam merkezdeki yerine oturur */
+            transform: translateY(0); 
+        }
+        .p-alert-icon { font-size: 50px; margin-bottom: 20px; }
+        .p-alert-icon.warning { color: #f39c12; }
+        .p-alert-icon.success { color: #2ecc71; }
+        .p-alert-icon.error { color: #e74c3c; }
+        .p-alert-icon.loading { color: #3498db; }
+        .p-alert-title { font-size: 22px; color: #2c3e50; margin-bottom: 10px; font-weight: 800; }
+        .p-alert-text { font-size: 15px; color: #7f8c8d; margin-bottom: 25px; line-height: 1.5; font-weight: 500;}
+        .p-alert-buttons { display: flex; gap: 12px; justify-content: center; }
+        .p-alert-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .p-alert-btn-gray { background: #ecf0f1; color: #7f8c8d; }
+        .p-alert-btn-gray:hover { background: #bdc3c7; color: #2c3e50; }
+        .p-alert-btn-blue { background: #007bff; color: #fff; }
+        .p-alert-btn-blue:hover { background: #0056b3; transform: translateY(-2px); }
+        .p-alert-btn-red { background: #e74c3c; color: #fff; }
+        .p-alert-btn-red:hover { background: #c0392b; transform: translateY(-2px); }
+
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -3946,8 +4037,8 @@
         // =================================================================
         // YENİ: collection ve getDocs eklendi
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut, updatePassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut, updatePassword, updateProfile, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAKpk8odLUEZTJh_4qvyrcu59t4eoNNIe8",
@@ -4539,16 +4630,30 @@ import { getFirestore, doc, setDoc, getDoc, collection, getDocs, query, where } 
                 if(document.getElementById('sideMenuLoginBtn')) document.getElementById('sideMenuLoginBtn').style.display = 'none';
                 if(document.getElementById('sideMenuRegisterBtn')) document.getElementById('sideMenuRegisterBtn').style.display = 'none';
 
-                // YENİ: Başarıyla giriş yapmışsa Profil ve Ayarlar butonlarını göster
+                // Önce varsayılan olarak Profil yazısıyla oluştur (Hızlı görünüm için)
+                // Eğer Firebase profilinde isim varsa direkt onu yazar
+                const initialName = user.displayName || "Profil";
                 document.getElementById('headerAuthContainer').innerHTML = `
-                    <button class="header-icon-btn" id="headerProfileBtn" onclick="window.openProfileModal()"><i class="fa-solid fa-user"></i> Profil</button>
+                    <button class="header-icon-btn" id="headerProfileBtn" onclick="window.openProfileModal()"><i class="fa-solid fa-user"></i> ${initialName}</button>
                     <button class="header-icon-btn" id="headerSettingsBtn"><i class="fa-solid fa-gear"></i> Ayarlar</button>
                 `;
 
                 try {
-                    // 1. Notları Çek
+                    // 1. Notları Çek ve Profil Verisini Hafızaya Al
                     const userDocRef = doc(db, "users", user.uid);
                     const docSnap = await getDoc(userDocRef);
+                    
+                    if (docSnap.exists()) {
+                        const userData = docSnap.data();
+                        window.currentUserProfileData = userData; // YENİ: Verileri anında açılmak üzere hafızaya mühürledik!
+                        
+                        if (userData.username) {
+                            const profBtn = document.getElementById('headerProfileBtn');
+                            if (profBtn) profBtn.innerHTML = `<i class="fa-solid fa-user"></i> ${userData.username}`;
+                        }
+                    } else {
+                        window.currentUserProfileData = {}; // Boşsa da çökmesin diye boş obje atıyoruz
+                    }
                     if (docSnap.exists() && docSnap.data().notes && docSnap.data().notes.length > 0) {
                         const oldNotes = docSnap.data().notes;
                         for (let oldNote of oldNotes) {
@@ -10858,139 +10963,281 @@ import { getFirestore, doc, setDoc, getDoc, collection, getDocs, query, where } 
         };
 
         // ==========================================
-        // --- PROFİL EKRANI VE KAYIT MOTORU ---
+        // --- PROFİL EKRANI VE ZEKİ KAYIT MOTORU ---
         // ==========================================
         const profileModal = document.getElementById('profileModal');
-        const profRoleRadios = document.querySelectorAll('input[name="profEditRole"]');
-        const profExamRadios = document.querySelectorAll('input[name="profEditExam"]');
-        const profUpdateMsg = document.getElementById('profileUpdateMsg');
+        const profAlertOverlay = document.getElementById('profAlertOverlay');
+        const profAlertBox = document.getElementById('profAlertBox');
 
-        // Modalı Aç ve Verileri Firebase'den Çek
-        window.openProfileModal = async function() {
-            if (!auth.currentUser) return;
-            
-            profUpdateMsg.style.display = 'none'; 
-            document.getElementById('profEditPassword').value = ''; 
-            document.getElementById('saveProfileBtn').innerText = 'Değişiklikleri Kaydet';
+        // --- BİLDİRİM BALONCUĞU KONTROLCÜSÜ ---
+        window.showProfAlert = function(type, title, text, buttonsHTML) {
+            let iconHTML = '';
+            if(type === 'warning') iconHTML = '<i class="fa-solid fa-triangle-exclamation p-alert-icon warning"></i>';
+            else if(type === 'success') iconHTML = '<i class="fa-solid fa-circle-check p-alert-icon success"></i>';
+            else if(type === 'error') iconHTML = '<i class="fa-solid fa-circle-xmark p-alert-icon error"></i>';
+            else if(type === 'loading') iconHTML = '<i class="fa-solid fa-circle-notch fa-spin p-alert-icon loading"></i>';
 
-            try {
-                // Sisteme giriş yapmış adamın verilerini Firestore'dan al
-                const userSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
-                
-                if (userSnap.exists()) {
-                    const data = userSnap.data();
-                    
-                    document.getElementById('profEditUsername').value = data.username || auth.currentUser.displayName || '';
-                    document.getElementById('profEditEmail').value = auth.currentUser.email || '';
-                    
-                    if(data.role) document.querySelector(`input[name="profEditRole"][value="${data.role}"]`).checked = true;
-                    if(data.exam && data.role === 'ogrenci') {
-                        document.querySelector(`input[name="profEditExam"][value="${data.exam}"]`).checked = true;
-                    }
-                    if(data.field) document.getElementById('profEditFieldSelect').value = data.field;
-                    
-                    updateProfileDynamicUI(); // Sınav/Alan göstergizle mantığını tetikle
-                    
-                    profileModal.style.display = 'flex';
-                    
-                    // Eğer sağ menü açıksa onu arkada kibarca kapat
-                    const sideMenu = document.getElementById('sideMenu');
-                    if(sideMenu && sideMenu.classList.contains('open')) sideMenu.classList.remove('open');
-                }
-            } catch(e) { console.error("Profil verisi çekilemedi:", e); }
+            profAlertBox.innerHTML = `
+                ${iconHTML}
+                <div class="p-alert-title">${title}</div>
+                <div class="p-alert-text">${text}</div>
+                <div class="p-alert-buttons">${buttonsHTML || ''}</div>
+            `;
+            profAlertOverlay.classList.add('show');
         };
 
-        // Dinamik Göster/Gizle (Öğrenciyse Sınav aç, YKS ise Alan aç)
-        function updateProfileDynamicUI() {
-            const role = document.querySelector('input[name="profEditRole"]:checked')?.value;
-            const exam = document.querySelector('input[name="profEditExam"]:checked')?.value;
+        window.closeProfAlert = function() { profAlertOverlay.classList.remove('show'); };
 
-            document.getElementById('profEditExamGroup').style.display = (role === 'ogrenci') ? 'block' : 'none';
-            document.getElementById('profEditFieldGroup').style.display = (role === 'ogrenci' && exam === 'yks') ? 'block' : 'none';
+        // --- DURUM İZLEYİCİ (STATE TRACKER) ---
+        window.getProfileCurrentState = function() {
+            return {
+                username: document.getElementById('profEditUsername').value.trim(),
+                password: document.getElementById('profNewPassword').value,
+                confirmPassword: document.getElementById('profConfirmPassword').value,
+                role: document.querySelector('input[name="profEditRole"]:checked')?.value || '',
+                exam: document.querySelector('input[name="profEditExam"]:checked')?.value || '',
+                field: document.getElementById('profEditFieldSelect').value || ''
+            };
+        };
+
+        window.hasProfileChanged = function() {
+            if (!window.initialProfileState) return false;
+            const current = window.getProfileCurrentState();
+            const initial = window.initialProfileState;
+            
+            return current.username !== initial.username || current.password !== initial.password || 
+                   current.confirmPassword !== initial.confirmPassword || current.role !== initial.role || 
+                   current.exam !== initial.exam || current.field !== initial.field;
+        };
+
+        // --- PROFİLİ IŞIK HIZINDA AÇMA ---
+        window.openProfileModal = function() { 
+            if (!auth.currentUser) return;
+            
+            // Kutuları sıfırla
+            document.getElementById('profCurrentPassword').value = '';
+            document.getElementById('profNewPassword').value = '';
+            document.getElementById('profConfirmPassword').value = '';
+            document.getElementById('profNewPassword').disabled = true;
+            document.getElementById('profNewPassword').style.background = '#f8f9fa';
+            document.getElementById('profConfirmPassword').disabled = true;
+            document.getElementById('profConfirmPassword').style.background = '#f8f9fa';
+            
+            const verifyBtn = document.getElementById('verifyCurrentPasswordBtn');
+            verifyBtn.innerText = 'Onayla';
+            verifyBtn.style.background = '#007bff';
+            verifyBtn.disabled = false;
+
+            // Yan menüleri temizle
+            const sideMenu = document.getElementById('sideMenu') || document.querySelector('.menu-content');
+            const menuOverlay = document.getElementById('menuOverlay') || document.querySelector('.menu-overlay');
+            if (sideMenu) sideMenu.classList.remove('open', 'active');
+            if (menuOverlay) { menuOverlay.classList.remove('open', 'active'); menuOverlay.style.display = 'none'; menuOverlay.click(); }
+
+            // Hafızadaki veriyi anında yerleştir
+            if (window.currentUserProfileData) {
+                const data = window.currentUserProfileData;
+                document.getElementById('profEditUsername').value = data.username || auth.currentUser.displayName || '';
+                document.getElementById('profEditEmail').value = data.email || auth.currentUser.email || '';
+                
+                if(data.role) document.querySelector(`input[name="profEditRole"][value="${data.role}"]`).checked = true;
+                if(data.exam && data.role === 'ogrenci') document.querySelector(`input[name="profEditExam"][value="${data.exam}"]`).checked = true;
+                
+                if(data.field) {
+                    document.getElementById('profEditFieldSelect').value = data.field;
+                    const option = document.querySelector(`.custom-option[data-value="${data.field}"]`);
+                    if (option) {
+                        document.querySelectorAll('.custom-option').forEach(opt => opt.classList.remove('selected'));
+                        option.classList.add('selected');
+                        document.querySelector('#profFieldTrigger span').textContent = option.textContent;
+                    }
+                } else {
+                    document.getElementById('profEditFieldSelect').value = '';
+                    document.querySelectorAll('.custom-option').forEach(opt => opt.classList.remove('selected'));
+                    document.querySelector('#profFieldTrigger span').textContent = 'Seçiniz...';
+                }
+                updateProfileDynamicUI(); 
+            }
+
+            profileModal.style.display = 'flex';
+            
+            // EKRAN AÇILDIĞI AN DURUMU FOTOĞRAFLA
+            window.initialProfileState = window.getProfileCurrentState();
+        };
+
+        // --- ÇIKIŞ KONTROLÜ (X BUTONU VEYA DIŞARI TIKLAMA) ---
+        window.forceCloseProfile = function() {
+            closeProfAlert();
+            profileModal.style.display = 'none';
+        };
+
+        function handleProfileClose() {
+            if (window.hasProfileChanged()) {
+                showProfAlert('warning', 'Kaydedilmemiş Değişiklikler', 'Kapatmadan önce yaptığınız değişiklikleri kaydetmek ister misiniz?', `
+                    <button class="p-alert-btn p-alert-btn-red" onclick="forceCloseProfile()">Hayır, Çık</button>
+                    <button class="p-alert-btn p-alert-btn-blue" onclick="window.executeProfileSave()">Evet, Kaydet</button>
+                `);
+            } else {
+                forceCloseProfile(); // Değişiklik yoksa bildirimsiz sessizce çık
+            }
         }
 
-        profRoleRadios.forEach(radio => radio.addEventListener('change', updateProfileDynamicUI));
-        profExamRadios.forEach(radio => radio.addEventListener('change', updateProfileDynamicUI));
+        // Eski kapatma dinleyicilerini yenileriyle değiştiriyoruz
+        const oldCloseBtn = document.getElementById('closeProfileBtn');
+        const newCloseBtn = oldCloseBtn.cloneNode(true); // Önceki dinleyicileri silmek için klonladık
+        oldCloseBtn.parentNode.replaceChild(newCloseBtn, oldCloseBtn);
+        newCloseBtn.addEventListener('click', handleProfileClose);
 
-        // Kapatma Butonu
-        document.getElementById('closeProfileBtn').addEventListener('click', () => { profileModal.style.display = 'none'; });
+        // --- KAYDET BUTONU YÖNLENDİRMESİ ---
+        const oldSaveBtn = document.getElementById('saveProfileBtn');
+        const newSaveBtn = oldSaveBtn.cloneNode(true);
+        oldSaveBtn.parentNode.replaceChild(newSaveBtn, oldSaveBtn);
+        newSaveBtn.addEventListener('click', () => {
+            if (!window.hasProfileChanged()) {
+                forceCloseProfile(); // Değişiklik yoksa bildirimsiz direkt çık
+                return;
+            }
+            showProfAlert('warning', 'Emin misiniz?', 'Yaptığınız değişiklikleri kaydetmek istediğinize emin misiniz?', `
+                <button class="p-alert-btn p-alert-btn-gray" onclick="closeProfAlert()">İptal</button>
+                <button class="p-alert-btn p-alert-btn-blue" onclick="window.executeProfileSave()">Evet, Kaydet</button>
+            `);
+        });
 
-        function showProfMsg(text, type) {
-            profUpdateMsg.innerText = text;
-            profUpdateMsg.style.display = 'block';
-            profUpdateMsg.style.backgroundColor = type === 'error' ? '#fdeea' : '#e8f8f5';
-            profUpdateMsg.style.color = type === 'error' ? '#e74c3c' : '#2ecc71';
-            profUpdateMsg.style.border = type === 'error' ? '1px solid #fadbd8' : '1px solid #d1f2eb';
-        }
-
-        // --- PROFİLİ KAYDETME MANTIĞI ---
-        document.getElementById('saveProfileBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('saveProfileBtn');
+        // --- ASIL KAYDETME MANTIĞI (Animasyonlu ve Güvenli) ---
+        window.executeProfileSave = async function() {
             const newUsername = document.getElementById('profEditUsername').value.trim();
-            const newPassword = document.getElementById('profEditPassword').value;
+            const newPassword = document.getElementById('profNewPassword').value;
+            const confirmPassword = document.getElementById('profConfirmPassword').value;
             const role = document.querySelector('input[name="profEditRole"]:checked')?.value;
             const exam = document.querySelector('input[name="profEditExam"]:checked')?.value;
             const field = document.getElementById('profEditFieldSelect').value;
 
-            // 1. Basit Hata Kontrolleri
-            if(!newUsername) return showProfMsg("Kullanıcı adı boş bırakılamaz!", "error");
-            if (newUsername.includes(' ')) return showProfMsg("Kullanıcı adı boşluk içeremez!", "error");
-            if (role === 'ogrenci' && !exam) return showProfMsg("Lütfen sınavı seçin.", "error");
-            if (role === 'ogrenci' && exam === 'yks' && !field) return showProfMsg("Lütfen alanınızı seçin.", "error");
+            // Hata Kontrolleri
+            if(!newUsername) return showProfAlert('error', 'Hata!', 'Kullanıcı adı boş bırakılamaz!', '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
+            if(newUsername.includes(' ')) return showProfAlert('error', 'Hata!', 'Kullanıcı adı boşluk içeremez!', '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
+            if(role === 'ogrenci' && !exam) return showProfAlert('error', 'Eksik Bilgi', 'Lütfen hazırlandığınız sınavı seçin.', '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
+            if(role === 'ogrenci' && exam === 'yks' && !field) return showProfAlert('error', 'Eksik Bilgi', 'Lütfen alanınızı seçin.', '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
+
+            if (newPassword || confirmPassword) {
+                if (newPassword !== confirmPassword) return showProfAlert('error', 'Şifre Uyuşmazlığı', 'Girdiğiniz yeni şifreler birbirleriyle eşleşmiyor.', '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
+                if (newPassword.length < 6) return showProfAlert('error', 'Güvenlik Uyarısı', 'Yeni şifreniz en az 6 karakter olmalıdır!', '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
+            }
+
+            // Animasyonu Başlat
+            showProfAlert('loading', 'Kaydediliyor...', 'Değişiklikleriniz buluta işleniyor, lütfen bekleyin.', '');
 
             try {
-                btn.innerText = 'Kaydediliyor...';
                 const userDocRef = doc(db, "users", auth.currentUser.uid);
                 const currentData = (await getDoc(userDocRef)).data();
 
-                // 2. Kullanıcı Adı Başkası Tarafından Alınmış mı Kontrolü
+                // Kullanıcı Adı Benzersizlik Kontrolü
                 if (newUsername !== currentData.username) {
                     const q = query(collection(db, "users"), where("username", "==", newUsername));
                     if (!(await getDocs(q)).empty) {
-                        btn.innerText = 'Değişiklikleri Kaydet';
-                        return showProfMsg("Bu kullanıcı adı zaten alınmış!", "error");
+                        return showProfAlert('error', 'Alınmış!', 'Bu kullanıcı adı zaten başka biri tarafından kullanılıyor.', '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
                     }
                     await updateProfile(auth.currentUser, { displayName: newUsername });
                 }
 
-                // 3. Şifre Değiştirilecekse (Boş bırakılmadıysa)
-                if (newPassword) {
-                    if (newPassword.length < 6) {
-                        btn.innerText = 'Değişiklikleri Kaydet';
-                        return showProfMsg("Şifre en az 6 karakter olmalıdır!", "error");
-                    }
-                    await updatePassword(auth.currentUser, newPassword);
-                }
+                // Şifre Güncelleme
+                if (newPassword) await updatePassword(auth.currentUser, newPassword);
 
-                // 4. Firestore Veritabanını Güncelle
-                const updateData = { username: newUsername, role: role };
-                if (role === 'ogrenci') {
-                    updateData.exam = exam;
-                    updateData.field = (exam === 'yks') ? field : null;
-                } else {
-                    updateData.exam = null; updateData.field = null;
-                }
+                // Firestore Güncelleme
+                const updateData = { username: newUsername, role: role, email: auth.currentUser.email };
+                if (role === 'ogrenci') { updateData.exam = exam; updateData.field = (exam === 'yks') ? field : null; } 
+                else { updateData.exam = null; updateData.field = null; }
 
                 await setDoc(userDocRef, updateData, { merge: true });
+                window.currentUserProfileData = { ...window.currentUserProfileData, ...updateData };
                 
-                // Menüdeki ismi dinamik değiştir (eğer "Profil" yerine isim yazıyorsa)
                 const currentHeaderBtn = document.getElementById('headerProfileBtn');
                 if(currentHeaderBtn) currentHeaderBtn.innerHTML = `<i class="fa-solid fa-user"></i> ${newUsername}`;
                 
-                showProfMsg("Profil başarıyla güncellendi!", "success");
-                setTimeout(() => { profileModal.style.display = 'none'; }, 1500);
+                // Başarı Bildirimi
+                showProfAlert('success', 'Harika!', 'Profiliniz başarıyla kaydedildi.', '<button class="p-alert-btn p-alert-btn-blue" onclick="forceCloseProfile()">Kapat</button>');
+                
+                // Yeni durumu fotoğraf olarak güncelle
+                window.initialProfileState = window.getProfileCurrentState();
 
             } catch (error) {
-                // Güvenlik gereği uzun süre girişli kalınca Firebase şifre değiştirtmez.
-                if (error.code === 'auth/requires-recent-login') {
-                    showProfMsg("Şifrenizi değiştirmek için çıkış yapıp tekrar girmelisiniz.", "error");
-                } else {
-                    showProfMsg("Hata: " + error.message, "error");
-                }
-            } finally {
-                btn.innerText = 'Değişiklikleri Kaydet';
+                if (error.code === 'auth/requires-recent-login') showProfAlert('error', 'Güvenlik', 'Şifrenizi değiştirmek için çıkış yapıp tekrar giriş yapmalısınız.', '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
+                else showProfAlert('error', 'Sistem Hatası', error.message, '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
+            }
+        };
+
+        // --- MEVCUT ŞİFREYİ ONAYLAMA MANTIĞI ---
+        document.getElementById('verifyCurrentPasswordBtn').addEventListener('click', async () => {
+            const currentPwd = document.getElementById('profCurrentPassword').value;
+            const btn = document.getElementById('verifyCurrentPasswordBtn');
+            if(!currentPwd) return showProfAlert('warning', 'Eksik Bilgi', 'Lütfen önce mevcut şifrenizi girin.', '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
+
+            try {
+                btn.innerText = '...';
+                const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPwd);
+                await reauthenticateWithCredential(auth.currentUser, credential);
+
+                document.getElementById('profNewPassword').disabled = false;
+                document.getElementById('profNewPassword').style.background = 'white';
+                document.getElementById('profConfirmPassword').disabled = false;
+                document.getElementById('profConfirmPassword').style.background = 'white';
+                btn.innerText = 'Onaylandı'; btn.style.background = '#2ecc71'; btn.disabled = true;
+
+            } catch(error) {
+                btn.innerText = 'Onayla';
+                showProfAlert('error', 'Hatalı Şifre', 'Mevcut şifrenizi yanlış girdiniz!', '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
             }
         });
+
+        // =========================================================
+        // --- EKSİK OLAN PROFİL DİNAMİK GÖSTER/GİZLE MOTORU ---
+        // =========================================================
+        function updateProfileDynamicUI() {
+            const role = document.querySelector('input[name="profEditRole"]:checked')?.value;
+            const exam = document.querySelector('input[name="profEditExam"]:checked')?.value;
+
+            const examGroup = document.getElementById('profEditExamGroup');
+            const fieldGroup = document.getElementById('profEditFieldGroup');
+            
+            if(examGroup) examGroup.style.display = (role === 'ogrenci') ? 'block' : 'none';
+            if(fieldGroup) fieldGroup.style.display = (role === 'ogrenci' && exam === 'yks') ? 'block' : 'none';
+        }
+
+        const profRoleRadios = document.querySelectorAll('input[name="profEditRole"]');
+        const profExamRadios = document.querySelectorAll('input[name="profEditExam"]');
+        if(profRoleRadios) profRoleRadios.forEach(radio => radio.addEventListener('change', updateProfileDynamicUI));
+        if(profExamRadios) profExamRadios.forEach(radio => radio.addEventListener('change', updateProfileDynamicUI));
+
+        // Profil Özel Açılır Menü (Alan Seçimi) İşleyişi
+        const profFieldWrapper = document.getElementById('profFieldWrapper');
+        if (profFieldWrapper) {
+            const trigger = profFieldWrapper.querySelector('.custom-select-trigger');
+            const options = profFieldWrapper.querySelectorAll('.custom-option');
+            const hiddenInput = document.getElementById('profEditFieldSelect');
+            const triggerText = trigger.querySelector('span');
+
+            trigger.addEventListener('click', function(e) {
+                profFieldWrapper.classList.toggle('open');
+                this.classList.toggle('active');
+            });
+
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    triggerText.textContent = this.textContent;
+                    hiddenInput.value = this.getAttribute('data-value');
+                    profFieldWrapper.classList.remove('open');
+                    trigger.classList.remove('active');
+                });
+            });
+
+            window.addEventListener('click', function(e) {
+                if (!profFieldWrapper.contains(e.target)) {
+                    profFieldWrapper.classList.remove('open');
+                    trigger.classList.remove('active');
+                }
+            });
+        }
 
     </script>
 
@@ -11046,9 +11293,19 @@ import { getFirestore, doc, setDoc, getDoc, collection, getDocs, query, where } 
         applySmartScale();
     </script>
 
+    <div class="prof-alert-overlay" id="profAlertOverlay">
+        <div class="prof-alert-box" id="profAlertBox">
+            </div>
+    </div>
+
     <div class="modal-overlay" id="profileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
-        <div class="modal" style="width: 90%; max-width: 500px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <div class="modal" style="width: 90%; max-width: 650px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative;">
             
+            <div id="profileLoader" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.85); z-index: 50; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; backdrop-filter: blur(2px);">
+                <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 40px; color: #007bff; margin-bottom: 15px;"></i>
+                <p style="font-weight: 600; color: #34495e; margin: 0;">Veriler Yükleniyor...</p>
+            </div>
+
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2 style="margin: 0; color: #2c3e50; font-size: 22px;"><i class="fa-solid fa-user-pen" style="color:#007bff; margin-right:8px;"></i> Profilim</h2>
                 <button id="closeProfileBtn" style="background: none; border: none; font-size: 26px; cursor: pointer; color: #95a5a6; transition: 0.2s;">&times;</button>
@@ -11068,38 +11325,68 @@ import { getFirestore, doc, setDoc, getDoc, collection, getDocs, query, where } 
                 </div>
 
                 <div>
-                    <label style="font-weight: 600; font-size: 14px; color: #34495e; display: block; margin-bottom: 5px;">Yeni Şifre <span style="font-size: 12px; color: #95a5a6;">(Değiştirmek istemiyorsanız boş bırakın)</span></label>
-                    <input type="text" id="profEditPassword" placeholder="En az 6 karakter" style="width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 15px; outline: none;">
+                    <label style="font-weight: 600; font-size: 14px; color: #34495e; display: block; margin-bottom: 5px;">Şifre Değiştir <span style="font-size: 12px; color: #95a5a6;">(İstemiyorsanız boş bırakın)</span></label>
+                    <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
+                        
+                        <div style="flex: 1; min-width: 0; position: relative;">
+                            <input type="password" id="profCurrentPassword" placeholder="Mevcut Şifre" style="width: 100%; padding: 10px 65px 10px 10px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 13px; outline: none; box-sizing: border-box;">
+                            <button id="verifyCurrentPasswordBtn" style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: #007bff; color: white; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.2s;">Onayla</button>
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 0;">
+                            <input type="password" id="profNewPassword" placeholder="Yeni Şifre" disabled style="width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 13px; outline: none; background: #f8f9fa; cursor: not-allowed; transition: 0.3s; box-sizing: border-box;">
+                        </div>
+
+                        <div style="flex: 1; min-width: 0;">
+                            <input type="password" id="profConfirmPassword" placeholder="Tekrar Girin" disabled style="width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 13px; outline: none; background: #f8f9fa; cursor: not-allowed; transition: 0.3s; box-sizing: border-box;">
+                        </div>
+
+                    </div>
                 </div>
 
                 <div>
                     <label style="font-weight: 600; font-size: 14px; color: #34495e; display: block; margin-bottom: 5px;">Hesap Türü</label>
-                    <div style="display: flex; gap: 15px;">
-                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="profEditRole" value="ogrenci"> Öğrenci</label>
-                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="profEditRole" value="mentor"> Mentor</label>
-                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="profEditRole" value="kurumsal"> Kurumsal</label>
+                    <div class="compact-role-toggle">
+                        <input type="radio" id="profRoleStudent" name="profEditRole" value="ogrenci">
+                        <label for="profRoleStudent">Öğrenci</label>
+                        <input type="radio" id="profRoleMentor" name="profEditRole" value="mentor">
+                        <label for="profRoleMentor">Mentor</label>
+                        <input type="radio" id="profRoleCorp" name="profEditRole" value="kurumsal">
+                        <label for="profRoleCorp">Kurumsal</label>
                     </div>
                 </div>
 
-                <div id="profEditExamGroup" style="display: none;">
-                    <label style="font-weight: 600; font-size: 14px; color: #34495e; display: block; margin-bottom: 5px;">Hazırlanılan Sınav</label>
-                    <div style="display: flex; gap: 15px;">
-                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="profEditExam" value="yks"> YKS</label>
-                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="profEditExam" value="lgs"> LGS</label>
+                <div style="display: flex; gap: 15px; width: 100%;">
+                    
+                    <div id="profEditExamGroup" style="display: none; flex: 2; margin-top: 15px;">
+                        <label style="font-weight: 600; font-size: 14px; color: #34495e; display: block; margin-bottom: 5px;">Hazırlanılan Sınav</label>
+                        <div class="compact-role-toggle">
+                            <input type="radio" id="profExamYKS" name="profEditExam" value="yks">
+                            <label for="profExamYKS">YKS</label>
+                            <input type="radio" id="profExamLGS" name="profEditExam" value="lgs">
+                            <label for="profExamLGS">LGS</label>
+                        </div>
                     </div>
-                </div>
 
-                <div id="profEditFieldGroup" style="display: none;">
-                    <label style="font-weight: 600; font-size: 14px; color: #34495e; display: block; margin-bottom: 5px;">Alanınız</label>
-                    <select id="profEditFieldSelect" style="width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 15px; outline: none;">
-                        <option value="">Seçiniz...</option>
-                        <option value="msu">MSÜ</option>
-                        <option value="tyt">TYT</option>
-                        <option value="sayisal">Sayısal</option>
-                        <option value="esit_agirlik">Eşit Ağırlık</option>
-                        <option value="sozel">Sözel</option>
-                        <option value="belli_degil">Daha Belli Değil</option>
-                    </select>
+                    <div id="profEditFieldGroup" style="display: none; flex: 1; margin-top: 15px;">
+                        <label style="font-weight: 600; font-size: 14px; color: #34495e; display: block; margin-bottom: 5px;">Alanınız</label>
+                        <div class="custom-select-wrapper" id="profFieldWrapper">
+                            <div class="custom-select-trigger" id="profFieldTrigger">
+                                <span>Seçiniz...</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                            <div class="custom-options">
+                                <span class="custom-option" data-value="msu">MSÜ</span>
+                                <span class="custom-option" data-value="tyt">TYT</span>
+                                <span class="custom-option" data-value="sayisal">Sayısal</span>
+                                <span class="custom-option" data-value="esit_agirlik">Eşit Ağırlık</span>
+                                <span class="custom-option" data-value="sozel">Sözel</span>
+                                <span class="custom-option" data-value="belli_degil">Daha Belli Değil</span>
+                            </div>
+                            <input type="hidden" id="profEditFieldSelect" value="">
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
