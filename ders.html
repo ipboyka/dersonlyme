@@ -3057,6 +3057,25 @@
             <div class="modal-body" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 20px 30px; background-color: #fcfcfc;">
                 
                 <div style="display: flex; justify-content: center; align-items: center; gap: 25px; margin-bottom: 25px; position: relative;">
+                    
+                    <div style="position: absolute; left: 0; display: flex; align-items: center; gap: 8px;">
+                        <div class="task-custom-select" id="tcs-plannerProfile" style="width: 180px; z-index: 100;">
+                            <div class="tcs-trigger" style="padding: 8px 12px; min-height: 38px; border-color: #cce5ff; background: #f8fbff; color: #007bff;"><span class="tcs-text" id="activeProfileText"><i class="fa-solid fa-star" style="color: #ffc107; margin-right: 5px;"></i> Ana Program</span> <i class="fa-solid fa-chevron-down"></i></div>
+                            <div class="tcs-options" id="plannerProfileOptions">
+                                <div class="tcs-option selected" data-value="main_profile"><i class="fa-solid fa-star" style="color: #ffc107; margin-right: 5px;"></i> Ana Program</div>
+                            </div>
+                            <input type="hidden" id="currentPlannerProfile" value="main_profile">
+                        </div>
+                        
+                        <button class="save-note-btn" id="addNewProfileBtn" data-custom-title="Yeni Program Ekle" style="padding: 0; width: 38px; height: 38px; display: flex; justify-content: center; align-items: center; border-radius: 8px;">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                        
+                        <button class="cancel-note-btn" id="setAsMainProfileBtn" data-custom-title="Bu programı Ana yap (Günlük ekranda göster)" style="display: none; padding: 0 12px; height: 38px; align-items: center; justify-content: center; gap: 6px; border-radius: 8px; color: #d39e00; border-color: #ffeeba; background-color: #fff8eb; font-size: 12px; font-weight: 800;">
+                            <i class="fa-regular fa-star"></i> Ana Yap
+                        </button>
+                    </div>
+
                     <button id="prevWeekBtn" class="week-nav-btn" data-custom-title="Önceki Hafta"><i class="fa-solid fa-chevron-left"></i></button>
                     <div style="display: flex; flex-direction: column; align-items: center;">
                         <h2 id="weekDateRangeDisplay" style="font-size: 24px; font-weight: 800; color: #333; letter-spacing: 0.5px;">9 - 15 Mart</h2>
@@ -3087,13 +3106,14 @@
     </div>
 
     <div id="addTaskModal" class="custom-modal" style="z-index: 2500;">
-        <div class="custom-modal-content" style="max-width: 500px;">
+        <div class="custom-modal-content" style="max-width: 650px;">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-list-check" style="color:#007bff; margin-right:8px;"></i> Yeni Görev Ekle</h3>
                 <span class="close-modal-btn" id="closeAddTaskModalBtn">&times;</span>
             </div>
             
             <div class="modal-body" style="gap: 15px;">
+                
                 <div style="display: flex; gap: 15px;">
                     <div class="input-group" style="flex: 1;">
                         <label>Sınav Türü</label>
@@ -3120,15 +3140,15 @@
                             <input type="hidden" id="taskTrack" value="sayisal">
                         </div>
                     </div>
-                </div>
 
-                <div class="input-group">
-                    <label>Ders Seçimi</label>
-                    <div class="task-custom-select" id="tcs-subject">
-                        <div class="tcs-trigger"><span class="tcs-text">Türkçe</span> <i class="fa-solid fa-chevron-down"></i></div>
-                        <div class="tcs-options" id="dynamicSubjectOptions">
+                    <div class="input-group" style="flex: 1.5;">
+                        <label>Ders Seçimi</label>
+                        <div class="task-custom-select" id="tcs-subject">
+                            <div class="tcs-trigger"><span class="tcs-text">Türkçe</span> <i class="fa-solid fa-chevron-down"></i></div>
+                            <div class="tcs-options" id="dynamicSubjectOptions">
                             </div>
-                        <input type="hidden" id="taskSubject" value="Türkçe">
+                            <input type="hidden" id="taskSubject" value="Türkçe">
+                        </div>
                     </div>
                 </div>
 
@@ -3153,7 +3173,13 @@
                     </div>
                 </div>
 
-                <div id="playlistSelectionSummary" style="display: none; background: #f8fbff; border: 1px solid #cce5ff; border-radius: 12px; padding: 15px; margin-top: 5px; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,123,255,0.05);">
+                <div id="playlistSelectionSummary" style="display: none; background: #f8fbff; border: 1px solid #cce5ff; border-radius: 12px; padding: 15px; margin-top: 5px; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,123,255,0.05); position: relative; overflow: hidden;">
+                    
+                    <div id="videoWarningOverlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(217, 83, 79, 0.9); z-index: 10; flex-direction: column; justify-content: center; align-items: center; color: white; backdrop-filter: blur(2px);">
+                        <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px; margin-bottom: 5px;"></i>
+                        <span style="font-size: 12px; font-weight: 800; text-align: center; padding: 0 10px;">Görev kaydedilince videolar görevden kaldırılacak!</span>
+                    </div>
+
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #cce5ff; padding-bottom: 10px; margin-bottom: 10px;">
                         <div style="font-weight: 800; color: #0056b3; font-size: 13px;" id="pss-text"><i class="fa-solid fa-list-check"></i> 0 Video Eklendi</div>
                         <div style="display: flex; align-items: center; gap: 8px;">
@@ -3183,26 +3209,28 @@
                     <textarea id="taskDesc" class="modal-textarea" placeholder="Hangi konu çalışılacak veya kaç soru çözülecek?" style="min-height: 70px;"></textarea>
                 </div>
 
-                <div class="input-group" style="flex: 1;">
-                    <label>Tahmini Süre <span class="required-star">*</span></label>
-                    <div class="custom-number-input">
-                        <input type="number" id="taskDuration" class="modal-input no-spinner" placeholder="Örn: 45" min="1">
-                        <span class="cni-label">Dakika</span>
-                        <div class="cni-controls">
-                            <button type="button" class="cni-btn" id="durDownBtn"><i class="fa-solid fa-minus"></i></button>
-                            <button type="button" class="cni-btn" id="durUpBtn"><i class="fa-solid fa-plus"></i></button>
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label>Tahmini Süre <span class="required-star">*</span></label>
+                        <div class="custom-number-input">
+                            <input type="number" id="taskDuration" class="modal-input no-spinner" placeholder="Örn: 45" min="1">
+                            <span class="cni-label">Dakika</span>
+                            <div class="cni-controls">
+                                <button type="button" class="cni-btn" id="durDownBtn"><i class="fa-solid fa-minus"></i></button>
+                                <button type="button" class="cni-btn" id="durUpBtn"><i class="fa-solid fa-plus"></i></button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                    
-                <div class="input-group" id="taskQuestionCountGroup" style="flex: 1; display: none;">
-                    <label>Soru Sayısı</label>
-                    <div class="custom-number-input">
-                        <input type="number" id="taskQuestionCount" class="modal-input no-spinner" placeholder="Örn: 40" min="1" style="padding-right: 85px; transition: all 0.3s;">
-                        <span class="cni-label" style="right: 75px; pointer-events: none;">Soru</span>
-                        <div class="cni-controls">
-                            <button type="button" class="cni-btn" id="qcDownBtn"><i class="fa-solid fa-minus"></i></button>
-                            <button type="button" class="cni-btn" id="qcUpBtn"><i class="fa-solid fa-plus"></i></button>
+                        
+                    <div class="input-group" id="taskQuestionCountGroup" style="flex: 1; display: none;">
+                        <label>Soru Sayısı</label>
+                        <div class="custom-number-input">
+                            <input type="number" id="taskQuestionCount" class="modal-input no-spinner" placeholder="Örn: 40" min="1" style="padding-right: 85px; transition: all 0.3s;">
+                            <span class="cni-label" style="right: 75px; pointer-events: none;">Soru</span>
+                            <div class="cni-controls">
+                                <button type="button" class="cni-btn" id="qcDownBtn"><i class="fa-solid fa-minus"></i></button>
+                                <button type="button" class="cni-btn" id="qcUpBtn"><i class="fa-solid fa-plus"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -3220,8 +3248,27 @@
         </div>
     </div>
 
+    <div id="addProfileModal" class="custom-modal" style="z-index: 3000;">
+        <div class="custom-modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-folder-plus" style="color:#007bff; margin-right:8px;"></i> Yeni Program Ekle</h3>
+                <span class="close-modal-btn" id="closeAddProfileModalBtn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>Program Adı <span class="required-star">*</span></label>
+                    <input type="text" id="newProfileNameInput" class="modal-input" placeholder="Örn: Ara Tatil Kampı, 2. Dönem Programı">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-note-btn" onclick="document.getElementById('addProfileModal').style.display='none'">İptal Et</button>
+                <button class="save-note-btn" id="saveNewProfileBtn">Programı Oluştur</button>
+            </div>
+        </div>
+    </div>
+
     <div id="viewTaskModal" class="custom-modal" style="z-index: 2600;">
-        <div class="custom-modal-content" style="max-width: 500px;">
+        <div class="custom-modal-content" style="max-width: 650px;">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-clipboard-list" style="color:#007bff; margin-right:8px;"></i> Görev Detayı</h3>
                 <span class="close-modal-btn" id="closeViewTaskModalBtn">&times;</span>
@@ -3251,6 +3298,9 @@
                 <div style="display: flex; gap: 10px;">
                     <button class="save-note-btn" id="completeTaskBtn" style="background-color: #28a745; color: white; box-shadow: none;"><i class="fa-solid fa-check"></i> Tamamlandı</button>
                     <button class="save-note-btn" id="editTaskBtn" style="background-color: #ffc107; color: #333; box-shadow: none;"><i class="fa-solid fa-pen"></i> Düzenle</button>
+                    <button onclick="window.playTaskYoutubeVideos()" style="background: #ff0000; color: white; border: none; border-radius: 8px; padding: 8px 16px; font-size: 14px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 10px rgba(255,0,0,0.2);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        <i class="fa-brands fa-youtube" style="font-size: 18px;"></i> YouTube'da Aç
+                    </button>
                 </div>
                 <button class="cancel-note-btn" id="closeViewTaskBtn">Kapat</button>
             </div>
@@ -4639,6 +4689,12 @@
                 `;
 
                 try {
+
+                    // YENİ: Kullanıcının özel program profillerini Firebase'den çek
+                    if (typeof window.loadPlannerProfilesFromDB === 'function') {
+                        await window.loadPlannerProfilesFromDB();
+                    }
+
                     // 1. Notları Çek ve Profil Verisini Hafızaya Al
                     const userDocRef = doc(db, "users", user.uid);
                     const docSnap = await getDoc(userDocRef);
@@ -6320,7 +6376,19 @@
                 }
             }
 
-            const allTasks = userTasks[dateKey] || [];
+            const allRawTasks = userTasks[dateKey] || [];
+            
+            // YENİ: Sadece "Ana Program" (Yıldızlı) olarak seçilmiş olan programın görevlerini listeye çek
+            let mainProfileId = 'main_profile';
+            if (window.plannerProfiles) {
+                const mainP = window.plannerProfiles.find(p => p.isMain);
+                if (mainP) mainProfileId = mainP.id;
+            }
+            
+            const allTasks = allRawTasks.filter(t => {
+                const taskProfileId = t.profileId || 'main_profile';
+                return taskProfileId === mainProfileId;
+            });
             
             // Tüm günün toplam hedeflenen süresini hesapla
             let totalMins = 0;
@@ -6509,7 +6577,13 @@
                 currentDay.setDate(currentDay.getDate() + i);
                 const dateKey = `${currentDay.getFullYear()}-${String(currentDay.getMonth() + 1).padStart(2, '0')}-${String(currentDay.getDate()).padStart(2, '0')}`;
                 
-                let dayTasks = [...(userTasks[dateKey] || [])];
+                // YENİ: Seçili programı (profili) bul ve sadece o programın görevlerini süz!
+                const currentProfileId = document.getElementById('currentPlannerProfile') ? document.getElementById('currentPlannerProfile').value : 'main_profile';
+                
+                let dayTasks = [...(userTasks[dateKey] || [])].filter(t => {
+                    const taskProfileId = t.profileId || 'main_profile'; // Eski görevler Ana Programa aittir
+                    return taskProfileId === currentProfileId;
+                });
                 
                 if (window.filteredSubjects && window.filteredSubjects.length > 0) {
                     dayTasks.sort((a, b) => {
@@ -6721,7 +6795,7 @@
                 if(hiddenInput.id === 'taskTrack') {
                     updateTaskSubjectDropdown();
                 }
-                // YENİ: Görev türü değiştiğinde Soru Sayısı kutusunu göster/gizle
+
                 // YENİ: Görev türü değiştiğinde Soru Sayısı kutusunu ve Playlist butonunu göster/gizle
                 if (hiddenInput.id === 'taskType') {
                     const qcGroup = document.getElementById('taskQuestionCountGroup');
@@ -6733,10 +6807,14 @@
                             document.getElementById('taskQuestionCount').value = '';
                         }
                     }
-                    
                     const playlistBtn = document.getElementById('selectFromPlaylistBtn');
                     if (playlistBtn) {
                         playlistBtn.style.display = (value === 'Konu Anlatımı' || value === 'Genel Tekrar') ? 'flex' : 'none';
+                    }
+                            
+                    // YENİ: Video silinme uyarı perdesini kontrol et
+                    if (typeof window.checkVideoWarningOverlay === 'function') {
+                        window.checkVideoWarningOverlay();
                     }
                 }
 
@@ -6917,10 +6995,15 @@
                 } else {
                     if (qcGroup) qcGroup.style.display = 'none';
                 }
-
+                
                 const playlistBtn = document.getElementById('selectFromPlaylistBtn');
                 if (playlistBtn) {
                     playlistBtn.style.display = (value === 'Konu Anlatımı' || value === 'Genel Tekrar') ? 'flex' : 'none';
+                }
+
+                // YENİ: Video silinme uyarı perdesini kontrol et
+                if (typeof window.checkVideoWarningOverlay === 'function') {
+                    window.checkVideoWarningOverlay();
                 }
             }
         }
@@ -6952,13 +7035,20 @@
             }
             
             // YENİ: GÖREVE EKLENMİŞ VİDEOLAR VARSA LİSTELE
-            const videoListContainer = document.getElementById('viewTaskVideoList');
-            const vtvList = document.getElementById('vtv-list');
-            
-            if (task.taskVideos && task.taskVideos.length > 0) {
-                videoListContainer.style.display = 'block';
-                vtvList.innerHTML = '';
-                task.taskVideos.forEach((v, index) => {
+                const videoListContainer = document.getElementById('viewTaskVideoList');
+                const vtvList = document.getElementById('vtv-list');
+                
+                if (task.taskVideos && task.taskVideos.length > 0) {
+                    videoListContainer.style.display = 'block';
+                    vtvList.innerHTML = '';
+                    
+                    // YENİ: Başlığın yanına video sayısını parantez içinde yazdır
+                    const vtvTitle = videoListContainer.querySelector('h4');
+                    if (vtvTitle) {
+                        vtvTitle.innerHTML = `<i class="fa-solid fa-list-ul"></i> Plana Eklenen Videolar (${task.taskVideos.length})`;
+                    }
+
+                    task.taskVideos.forEach((v, index) => {
                     vtvList.innerHTML += `
                         <div style="display:flex; gap:10px; align-items:center; background:#fff; border:1px solid #eef2f5; padding:8px 12px; border-radius:8px;">
                             <div style="font-weight: 900; color: #007bff; width: 20px; font-size: 13px; text-align: center;">${index + 1}</div>
@@ -7224,6 +7314,25 @@
             closeTaskModalAndClear();
         });
 
+        // --- YENİ: VİDEO UYARI PERDESİ KONTROLCÜSÜ ---
+        window.checkVideoWarningOverlay = function() {
+            const overlay = document.getElementById('videoWarningOverlay');
+            const summaryDiv = document.getElementById('playlistSelectionSummary');
+            const taskType = document.getElementById('taskType').value;
+            
+            // Eğer videolar kutusu aktifse (yani videolu bir görev düzenleniyorsa)
+            if (summaryDiv && summaryDiv.style.display !== 'none') {
+                // Görev Konu veya Tekrar değilse kırmızı perdeyi indir!
+                if (taskType !== 'Konu Anlatımı' && taskType !== 'Genel Tekrar') {
+                    if (overlay) overlay.style.display = 'flex';
+                } else {
+                    if (overlay) overlay.style.display = 'none'; // Uygun göreve döndüyse kaldır
+                }
+            } else {
+                if (overlay) overlay.style.display = 'none';
+            }
+        };
+
         async function executeSaveTask() {
             if (!currentUserUid) {
                 alert("Lütfen giriş yapın!");
@@ -7234,16 +7343,43 @@
             const originalText = saveBtn.innerText;
             saveBtn.innerText = "Kaydediliyor...";
             saveBtn.disabled = true;
-            
+
             // YENİ EKLENEN KISIM: Kayıt işlemi başladı, pencere kapanırken etiketleri silmemesi için sistemi uyarıyoruz!
-            window.isTaskSaving = true; 
+            window.isTaskSaving = true;
 
             const taskTypeVal = taskTypeInput.value;
             const isQcVisible = taskTypeVal === 'Test Çözümü' || taskTypeVal === 'Deneme Çözümü' || taskTypeVal === 'Genel Deneme';
             const finalQuestionCount = isQcVisible ? (parseInt(document.getElementById('taskQuestionCount').value) || null) : null;
-            
+
+            // --- YENİ EKLENEN VİDEO TEMİZLİK MOTORU ---
+            // Eğer görev türü video desteklemeyen bir türe çevrildiyse videoları sil!
+            let finalTaskVideos = typeof currentTaskVideos !== 'undefined' ? currentTaskVideos : [];
+            if (taskTypeVal !== 'Konu Anlatımı' && taskTypeVal !== 'Genel Tekrar') {
+                if (finalTaskVideos && finalTaskVideos.length > 0) {
+                    let playlistsToUpdate = new Set();
+                    finalTaskVideos.forEach(v => {
+                        // Videoların ait olduğu playlistleri bul ve "Plana Eklendi" tikini kaldır
+                        const pl = savedPlaylists.find(p => p.id.toString() === v.plId.toString());
+                        if (pl && pl.videos && pl.videos[v.index]) {
+                            pl.videos[v.index].isPlanned = false;
+                            playlistsToUpdate.add(pl);
+                        }
+                    });
+                    // Temizlenen playlistleri buluta eşitle
+                    if (currentUserUid) {
+                        playlistsToUpdate.forEach(pl => {
+                            setDoc(doc(db, "users", currentUserUid, "userPlaylists", pl.id.toString()), pl, { merge: true }).catch(e=>{});
+                        });
+                    }
+                }
+                finalTaskVideos = []; // Videoları görevden tamamen kopar
+                currentTaskVideos = []; // Ekran belleğindekileri de boşalt
+            }
+            // ------------------------------------------
+
             const newTask = {
                 id: editingTaskId ? editingTaskId : Date.now(),
+                profileId: document.getElementById('currentPlannerProfile') ? document.getElementById('currentPlannerProfile').value : 'main_profile', // YENİ: Görevin ait olduğu program
                 examType: taskExamTypeInput.value,
                 track: taskExamTypeInput.value === 'ayt' ? taskTrackInput.value : null,
                 subject: taskSubjectInput.value,
@@ -7252,8 +7388,8 @@
                 desc: taskDesc.value.trim(),
                 duration: parseInt(taskDuration.value),
                 dateKey: selectedDateForTask,
-                taskVideos: currentTaskVideos,
-                taskSpeed: currentTaskSpeed // YENİ: Seçili hızı veritabanına kaydeder
+                taskVideos: finalTaskVideos, 
+                taskSpeed: typeof currentTaskSpeed !== 'undefined' ? currentTaskSpeed : 1
             };
 
             try {
@@ -7277,8 +7413,9 @@
             } finally {
                 saveBtn.innerText = originalText;
                 saveBtn.disabled = false;
+                
                 // YENİ EKLENEN KISIM: İşlem bitince sistemi normale döndür (İptal edilebilsin diye)
-                window.isTaskSaving = false; 
+                window.isTaskSaving = false;
             }
         }
 
@@ -10593,65 +10730,95 @@
 
                 const modalHtml = `
                     <div id="exportPlannerModal" class="custom-modal" style="z-index: 4000; display: none; background: rgba(0,0,0,0.6);">
-                        <div class="custom-modal-content" style="max-width: 450px; width: 90%; padding: 25px; border-radius: 12px; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center;">
+                        <div class="custom-modal-content" style="max-width: 900px; width: 95%; padding: 25px; border-radius: 12px; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center;">
+                            
                             <h4 style="margin: 0 0 15px 0; color: #28a745; font-size: 18px; font-weight: 800;"><i class="fa-solid fa-file-export"></i> Programı İndir</h4>
                             <p style="font-size: 12px; color: #666; margin-bottom: 20px;">İndirilen dosyada tüm görevlerin açıklamaları <b>tamamen okunabilir</b> şekilde otomatik olarak genişletilecektir.</p>
                             
-                            <div style="text-align: left; margin-bottom: 15px;">
-                                <label style="font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; display: block;">Program Başlığı (Opsiyonel)</label>
-                                <input type="text" id="exportCustomTitle" placeholder="Örn: YKS Son Tekrar Kampı" oninput="window.updateExportPreview()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e2e6ea; font-size: 13px; outline: none; box-sizing: border-box; transition: all 0.2s;">
-                            </div>
+                            <div style="display: flex; gap: 25px; text-align: left; margin-bottom: 20px; align-items: stretch; flex-wrap: wrap;">
+                                
+                                <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 15px;">
+                                    
+                                    <div style="display: flex; gap: 15px;">
+                                        <div style="flex: 1;">
+                                            <style>
+                                                /* Kutu açıldığında alt köşeleri jilet gibi düzleştiren özel CSS */
+                                                #tcs-exportProfile.open #exportProfileTrigger {
+                                                    border-bottom-left-radius: 0 !important;
+                                                    border-bottom-right-radius: 0 !important;
+                                                }
+                                            </style>
+                                            <label style="font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; display: block;">Program Seçimi</label>
+                                            <div class="task-custom-select" id="tcs-exportProfile" style="width: 100%;">
+                                                <div class="tcs-trigger" id="exportProfileTrigger" onclick="window.toggleExportMenu(event)" style="padding: 10px; border-radius: 8px; border: 1px solid #e2e6ea; font-size: 13px; outline: none; box-sizing: border-box; background: #fff; min-height: auto; transition: all 0.2s;">
+                                                    <span class="tcs-text" id="exportProfileText"><i class="fa-solid fa-star" style="color: #ffc107; margin-right: 5px;"></i> Ana Program</span> 
+                                                    <i class="fa-solid fa-chevron-down"></i>
+                                                </div>
+                                                <div class="tcs-options" id="exportProfileOptions">
+                                                    </div>
+                                                <input type="hidden" id="exportProfileInput" value="main_profile">
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="flex: 1.5;">
+                                            <label style="font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; display: block;">Program Başlığı</label>
+                                            <input type="text" id="exportCustomTitle" placeholder="Örn: YKS Son Tekrar Kampı" oninput="window.updateExportPreview()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e2e6ea; font-size: 13px; outline: none; box-sizing: border-box; transition: all 0.2s;">
+                                        </div>
+                                    </div>
 
-                            <div style="text-align: left; margin-bottom: 15px;">
-                                <label style="font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; display: block;">Hangi Hafta İndirilsin?</label>
-                                <div class="export-segment">
-                                    <input type="radio" name="expWeek" id="expWeekPrev" value="-1" onchange="window.updateExportPreview()">
-                                    <label for="expWeekPrev">Geçen Hafta</label>
-                                    
-                                    <input type="radio" name="expWeek" id="expWeekCurr" value="0" checked onchange="window.updateExportPreview()">
-                                    <label for="expWeekCurr">Bu Hafta</label>
-                                    
-                                    <input type="radio" name="expWeek" id="expWeekNext" value="1" onchange="window.updateExportPreview()">
-                                    <label for="expWeekNext">Gelecek Hafta</label>
-                                </div>
-                            </div>
+                                    <div>
+                                        <label style="font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; display: block;">Hangi Hafta İndirilsin?</label>
+                                        <div class="export-segment">
+                                            <input type="radio" name="expWeek" id="expWeekPrev" value="-1" onchange="window.updateExportPreview()">
+                                            <label for="expWeekPrev">Geçen Hafta</label>
+                                            
+                                            <input type="radio" name="expWeek" id="expWeekCurr" value="0" checked onchange="window.updateExportPreview()">
+                                            <label for="expWeekCurr">Bu Hafta</label>
+                                            
+                                            <input type="radio" name="expWeek" id="expWeekNext" value="1" onchange="window.updateExportPreview()">
+                                            <label for="expWeekNext">Gelecek Hafta</label>
+                                        </div>
+                                    </div>
 
-                            <div style="text-align: left; margin-bottom: 15px;">
-                                <label style="font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; display: block;">Planlayıcı Düzeni</label>
-                                <div class="export-segment">
-                                    <input type="radio" name="expLayout" id="expLayoutCol" value="column" onchange="window.updateExportPreview()">
-                                    <label for="expLayoutCol">Sütun (Dikey)</label>
-                                    
-                                    <input type="radio" name="expLayout" id="expLayoutRow" value="row" onchange="window.updateExportPreview()">
-                                    <label for="expLayoutRow">Satır (Yatay)</label>
-                                </div>
-                            </div>
+                                    <div>
+                                        <label style="font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; display: block;">Planlayıcı Düzeni</label>
+                                        <div class="export-segment">
+                                            <input type="radio" name="expLayout" id="expLayoutCol" value="column" onchange="window.updateExportPreview()">
+                                            <label for="expLayoutCol">Sütun (Dikey)</label>
+                                            
+                                            <input type="radio" name="expLayout" id="expLayoutRow" value="row" onchange="window.updateExportPreview()">
+                                            <label for="expLayoutRow">Satır (Yatay)</label>
+                                        </div>
+                                    </div>
 
-                            <div style="text-align: left; margin-bottom: 15px;">
-                                <label style="font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; display: block;">Dosya Formatı</label>
-                                <div class="export-segment">
-                                    <input type="radio" name="expFormat" id="expFmtPng" value="png" checked>
-                                    <label for="expFmtPng">PNG</label>
-                                    
-                                    <input type="radio" name="expFormat" id="expFmtJpg" value="jpg">
-                                    <label for="expFmtJpg">JPG</label>
-                                    
-                                    <input type="radio" name="expFormat" id="expFmtPdf" value="pdf">
-                                    <label for="expFmtPdf">PDF</label>
+                                    <div>
+                                        <label style="font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; display: block;">Dosya Formatı</label>
+                                        <div class="export-segment">
+                                            <input type="radio" name="expFormat" id="expFmtPng" value="png" checked>
+                                            <label for="expFmtPng">PNG</label>
+                                            
+                                            <input type="radio" name="expFormat" id="expFmtJpg" value="jpg">
+                                            <label for="expFmtJpg">JPG</label>
+                                            
+                                            <input type="radio" name="expFormat" id="expFmtPdf" value="pdf">
+                                            <label for="expFmtPdf">PDF</label>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div style="text-align: left; margin-bottom: 20px;">
-                                <label style="font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; display: flex; justify-content: space-between;"><span>Önizleme</span> <span style="color:#aaa; font-size:10px;">(Büyütmek için tıkla)</span></label>
-                                <div id="exportPreviewContainer" style="position: relative; min-height: 120px; background: #f8f9fa; border: 1px dashed #ccc; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px;">
-                                    <span id="exportPreviewLoader" style="color: #007bff; font-size: 12px; font-weight: bold;"><i class="fa-solid fa-circle-notch fa-spin"></i> Önizleme Hazırlanıyor...</span>
-                                    <img id="exportPreviewImg" style="display: none;" onclick="window.openPreviewZoom()">
+                                <div style="flex: 1.2; min-width: 300px; display: flex; flex-direction: column;">
+                                    <label style="font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; display: flex; justify-content: space-between;"><span>Önizleme</span> <span style="color:#aaa; font-size:10px;">(Büyütmek için tıkla)</span></label>
+                                    <div id="exportPreviewContainer" style="flex: 1; min-height: 250px; position: relative; background: #f8f9fa; border: 1px dashed #ccc; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px;">
+                                        <span id="exportPreviewLoader" style="color: #007bff; font-size: 12px; font-weight: bold;"><i class="fa-solid fa-circle-notch fa-spin"></i> Önizleme Hazırlanıyor...</span>
+                                        <img id="exportPreviewImg" style="display: none; max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in;" onclick="window.openPreviewZoom()">
+                                    </div>
                                 </div>
+
                             </div>
 
                             <div style="display: flex; gap: 10px;">
-                                <button onclick="window.closeExportModal()" style="flex: 1; padding: 10px; border: 1px solid #ccc; background: #f8f9fa; border-radius: 8px; cursor: pointer; color: #333; font-weight: bold;">İptal</button>
-                                <button onclick="window.startExportProcess()" style="flex: 1; padding: 10px; border: none; background: #28a745; border-radius: 8px; cursor: pointer; color: white; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px;" id="exportConfirmBtn">
+                                <button onclick="window.closeExportModal()" style="flex: 1; padding: 12px; border: 1px solid #ccc; background: #f8f9fa; border-radius: 8px; cursor: pointer; color: #333; font-weight: bold; transition: 0.2s;" onmouseover="this.style.background='#e2e6ea'" onmouseout="this.style.background='#f8f9fa'">İptal</button>
+                                <button onclick="window.startExportProcess()" style="flex: 1; padding: 12px; border: none; background: #28a745; border-radius: 8px; cursor: pointer; color: white; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s;" onmouseover="this.style.background='#218838'" onmouseout="this.style.background='#28a745'" id="exportConfirmBtn">
                                     <i class="fa-solid fa-download"></i> İndir
                                 </button>
                             </div>
@@ -10672,13 +10839,17 @@
             document.getElementById('expFmtPng').checked = true;
             document.getElementById('exportCustomTitle').value = ''; // Modalı açınca temizle
 
+            // Modalı açınca temizle
             const currentLayout = localStorage.getItem('plannerLayout') || 'column';
             if (currentLayout === 'row') {
                 document.getElementById('expLayoutRow').checked = true;
             } else {
                 document.getElementById('expLayoutCol').checked = true;
             }
-
+            
+            // YENİ: İndirme penceresi açıldığı an, içi boş kalan menüyü güncel programlarla doldur!
+            if(typeof window.renderProfileOptionsUI === 'function') window.renderProfileOptionsUI();
+            
             window.updateExportPreview();
         };
 
@@ -10752,8 +10923,16 @@
                     currentDay.setDate(currentDay.getDate() + i);
                     const dateKey = `${currentDay.getFullYear()}-${String(currentDay.getMonth() + 1).padStart(2, '0')}-${String(currentDay.getDate()).padStart(2, '0')}`;
                     
-                    let dayTasks = [...(userTasks[dateKey] || [])];
+                    // YENİ: PDF/PNG'ye aktarılırken İNDİRME MENÜSÜNDEKİ (exportProfileInput) seçili programı baz al!
+                    const exportInputEl = document.getElementById('exportProfileInput');
+                    const exportProfileId = exportInputEl ? exportInputEl.value : 'main_profile';
                     
+                    let dayTasks = [...(userTasks[dateKey] || [])].filter(t => {
+                        const taskProfileId = t.profileId || 'main_profile';
+                        return taskProfileId === exportProfileId;
+                    });
+                    
+                    // SENİN KENDİ DERS FİLTRESİ (Silikleştirme) MANTIĞIN AYNEN KORUNDU
                     if (window.filteredSubjects && window.filteredSubjects.length > 0) {
                         dayTasks.sort((a, b) => {
                             const aActive = window.filteredSubjects.includes(a.subject);
@@ -11238,6 +11417,349 @@
                 }
             });
         }
+
+        // ======================================================
+        // --- YOUTUBE OTOMATİK PLAYLIST OLUŞTURUCU MOTOR (V6.0 KUSURSUZ DOM) ---
+        // ======================================================
+        window.playTaskYoutubeVideos = function() {
+            let videoIds = [];
+            
+            // 1. GÖREV AÇIKLAMASINA (DESC) BAK (Sadece Görev Detay penceresindeki kutuya)
+            const descBox = document.getElementById('viewTaskDesc');
+            if (descBox && descBox.innerText) {
+                const ytRegex = /(?:https?:\/\/)?(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?.*v=|v\/|embed\/|shorts\/)|youtu\.be\/)([^"&?\/\s]{11})/gi;
+                let match;
+                while ((match = ytRegex.exec(descBox.innerText)) !== null) {
+                    videoIds.push(match[1]);
+                }
+            }
+
+            // 2. GÖREVE ÖZEL EKLENEN VİDEOLARA BAK (Sadece Görev Detayındaki vtv-list Kutusuna)
+            const videoListBox = document.getElementById('vtv-list');
+            if (videoListBox) {
+                // Ekrandaki o listeye eklenmiş küçük kapak resimlerini bul
+                const images = videoListBox.querySelectorAll('img');
+                images.forEach(img => {
+                    if (img.src) {
+                        // Resim linkindeki o 11 haneli YouTube ID'sini jilet gibi cımbızla
+                        const match = img.src.match(/(?:vi|vi_webp)\/([a-zA-Z0-9_-]{11})\//);
+                        if (match && match[1]) {
+                            videoIds.push(match[1]);
+                        }
+                    }
+                });
+            }
+
+            // 3. Mükemmeliyetçi temizlik: Aynı videoyu iki kez eklemesin
+            videoIds = [...new Set(videoIds)];
+
+            // 4. Eğer gerçekten görevde video yoksa şık bildirimimizi göster
+            if (videoIds.length === 0) {
+                if (window.showProfAlert) {
+                    showProfAlert('warning', 'Video Bulunamadı', 'Bu göreve eklenmiş hiçbir YouTube videosu bulunamadı.', '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
+                } else {
+                    alert("Bu görevde YouTube videosu bulunamadı.");
+                }
+                return;
+            }
+
+            // 5. Videolar hazır! Yeni sekmede tertemiz bir playlist olarak patlat!
+            const playlistUrl = `https://www.youtube.com/watch_videos?video_ids=${videoIds.join(',')}`;
+            window.open(playlistUrl, '_blank');
+        };
+
+        // ======================================================
+        // --- ÇOKLU PROGRAM (PROFİL) YÖNETİMİ (KUSURSUZ TEK PARÇA MOTOR) ---
+        // ======================================================
+        
+        // 1. GÜVENLİ KLONLAMA YARDIMCISI (Buton çakışmalarını önler)
+        const replaceClone = (id) => {
+            const oldEl = document.getElementById(id);
+            if (oldEl) {
+                const newEl = oldEl.cloneNode(true);
+                oldEl.parentNode.replaceChild(newEl, oldEl);
+                return newEl;
+            }
+            return null;
+        };
+
+        const oldProfileSelect = document.getElementById('tcs-plannerProfile');
+        if (oldProfileSelect) {
+            const tcsProfileSelect = oldProfileSelect.cloneNode(true);
+            oldProfileSelect.parentNode.replaceChild(tcsProfileSelect, oldProfileSelect);
+        }
+
+        const tcsProfileSelect = document.getElementById('tcs-plannerProfile');
+        const tcsProfileTrigger = tcsProfileSelect ? tcsProfileSelect.querySelector('.tcs-trigger') : null;
+        const tcsProfileOptionsContainer = tcsProfileSelect ? tcsProfileSelect.querySelector('#plannerProfileOptions') : null;
+        const currentProfileInput = tcsProfileSelect ? tcsProfileSelect.querySelector('#currentPlannerProfile') : null;
+        const activeProfileText = tcsProfileSelect ? tcsProfileSelect.querySelector('#activeProfileText') : null;
+        
+        const addNewProfileBtn = replaceClone('addNewProfileBtn');
+        const setAsMainBtn = replaceClone('setAsMainProfileBtn');
+        const closeAddProfileModalBtn = replaceClone('closeAddProfileModalBtn');
+        const saveNewProfileBtn = replaceClone('saveNewProfileBtn');
+        const addProfileModal = document.getElementById('addProfileModal');
+
+        window.plannerProfiles = [ { id: 'main_profile', name: 'Ana Program', isMain: true } ];
+
+        // 2. VERİTABANI VE İLK YÜKLEME ZEKASI
+        window.loadPlannerProfilesFromDB = async function() {
+            if (!auth.currentUser) return;
+            try {
+                const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+                if (userDoc.exists() && userDoc.data().plannerProfiles) {
+                    window.plannerProfiles = userDoc.data().plannerProfiles;
+                }
+                
+                // Sayfa ilk açıldığında Ana Programı otomatik seç (Zorunlu)
+                const mainProfile = window.plannerProfiles.find(p => p.isMain);
+                if (mainProfile && currentProfileInput) {
+                    currentProfileInput.value = mainProfile.id;
+                }
+                
+                window.renderProfileOptionsUI();
+            } catch(e) { console.error("Programlar çekilemedi:", e); }
+        };
+
+        window.savePlannerProfilesToDB = async function() {
+            if (!auth.currentUser) return;
+            try {
+                await setDoc(doc(db, "users", auth.currentUser.uid), { plannerProfiles: window.plannerProfiles }, { merge: true });
+            } catch(e) { console.error("Programlar kaydedilemedi:", e); }
+        };
+
+        // 3. ARAYÜZ (UI) ÇİZİM MOTORU (İndirme ve Ana Menüyü Besler)
+        window.renderProfileOptionsUI = function() {
+            if (tcsProfileOptionsContainer) {
+                tcsProfileOptionsContainer.innerHTML = '';
+                
+                // Sıralama: Ana Program hep en üstte (1. Sırada)
+                window.plannerProfiles.sort((a, b) => {
+                    if (a.isMain) return -1;
+                    if (b.isMain) return 1;
+                    return 0; 
+                });
+
+                const currentId = currentProfileInput.value;
+                let currentExists = false;
+
+                window.plannerProfiles.forEach(p => {
+                    const icon = p.isMain ? '<i class="fa-solid fa-star" style="color: #ffc107; margin-right: 5px;"></i>' : '<i class="fa-regular fa-folder" style="color: #888; margin-right: 5px;"></i>';
+                    const selectedClass = p.id === currentId ? 'selected' : '';
+                    if (p.id === currentId) currentExists = true;
+                    tcsProfileOptionsContainer.innerHTML += `<div class="tcs-option ${selectedClass}" data-value="${p.id}">${icon} ${p.name}</div>`;
+                });
+
+                if (!currentExists && window.plannerProfiles.length > 0) {
+                    const safeProfile = window.plannerProfiles.find(p => p.isMain) || window.plannerProfiles[0];
+                    currentProfileInput.value = safeProfile.id;
+                }
+
+                const activeProfile = window.plannerProfiles.find(p => p.id === currentProfileInput.value) || window.plannerProfiles[0];
+                
+                if (activeProfileText) {
+                    if (activeProfile.isMain) {
+                        activeProfileText.innerHTML = `<i class="fa-solid fa-star" style="color: #ffc107; margin-right: 5px;"></i> ${activeProfile.name}`;
+                        if(setAsMainBtn) setAsMainBtn.style.display = 'none';
+                    } else {
+                        activeProfileText.innerHTML = `<i class="fa-regular fa-folder" style="color: #007bff; margin-right: 5px;"></i> ${activeProfile.name}`;
+                        if(setAsMainBtn) setAsMainBtn.style.display = 'flex';
+                    }
+                }
+                
+                setupProfileOptionListeners();
+                if(typeof updateWeeklyPlannerView === 'function') updateWeeklyPlannerView();
+            }
+
+            // DİNAMİK İNDİRME (EXPORT) MENÜSÜ GÜNCELLEMESİ
+            const exportOptionsContainer = document.getElementById('exportProfileOptions');
+            if (exportOptionsContainer) {
+                exportOptionsContainer.innerHTML = '';
+                const exportInput = document.getElementById('exportProfileInput');
+                let exportExists = false;
+
+                window.plannerProfiles.forEach(p => {
+                    const icon = p.isMain ? '<i class="fa-solid fa-star" style="color: #ffc107; margin-right: 5px;"></i>' : '<i class="fa-regular fa-folder" style="color: #888; margin-right: 5px;"></i>';
+                    if(!exportInput.value && currentProfileInput) exportInput.value = currentProfileInput.value; 
+                    
+                    const selectedClass = p.id === exportInput.value ? 'selected' : '';
+                    if (p.id === exportInput.value) exportExists = true;
+                    exportOptionsContainer.innerHTML += `<div class="tcs-option ${selectedClass}" data-value="${p.id}">${icon} ${p.name}</div>`;
+                });
+
+                if (!exportExists && currentProfileInput) exportInput.value = currentProfileInput.value;
+
+                const activeExport = window.plannerProfiles.find(p => p.id === exportInput.value) || window.plannerProfiles[0];
+                const expTextEl = document.getElementById('exportProfileText');
+                if (expTextEl) {
+                    expTextEl.innerHTML = (activeExport.isMain ? '<i class="fa-solid fa-star" style="color: #ffc107; margin-right: 5px;"></i> ' : '<i class="fa-regular fa-folder" style="color: #888; margin-right: 5px;"></i> ') + activeExport.name;
+                }
+
+                exportOptionsContainer.querySelectorAll('.tcs-option').forEach(opt => {
+                    opt.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        exportInput.value = this.getAttribute('data-value');
+                        const tcsExp = document.getElementById('tcs-exportProfile');
+                        if(tcsExp) {
+                            tcsExp.classList.remove('open');
+                            const trg = tcsExp.querySelector('.tcs-trigger');
+                            if(trg) trg.classList.remove('active');
+                        }
+                        window.renderProfileOptionsUI(); 
+                        if(typeof window.updateExportPreview === 'function') window.updateExportPreview(); 
+                    });
+                });
+            }
+        };
+
+        // 4. AÇILIR KAPANIR MENÜ TETİKLEYİCİLERİ
+        if(tcsProfileTrigger) {
+            tcsProfileTrigger.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                tcsProfileSelect.classList.toggle('open'); 
+                tcsProfileTrigger.classList.toggle('active');
+            });
+        }
+        
+        window.addEventListener('click', (e) => {
+            if (tcsProfileSelect && !tcsProfileSelect.contains(e.target)) {
+                tcsProfileSelect.classList.remove('open'); 
+                if(tcsProfileTrigger) tcsProfileTrigger.classList.remove('active');
+            }
+            
+            // İndirme Menüsü için tıklama kontrolü
+            const tcsExportSelect = document.getElementById('tcs-exportProfile');
+            if (tcsExportSelect && !tcsExportSelect.contains(e.target)) {
+                tcsExportSelect.classList.remove('open');
+                const expTrigger = tcsExportSelect.querySelector('.tcs-trigger');
+                if(expTrigger) expTrigger.classList.remove('active');
+            }
+        });
+
+        // İndirme Menüsü Özel Tetikleyicisi (Sonradan var olduğu için Event Delegation kullanılır)
+        document.addEventListener('click', function(e) {
+            const trigger = e.target.closest('#tcs-exportProfile .tcs-trigger');
+            if (trigger) {
+                e.stopPropagation();
+                const wrapper = document.getElementById('tcs-exportProfile');
+                wrapper.classList.toggle('open');
+                trigger.classList.toggle('active');
+            }
+        });
+
+        function setupProfileOptionListeners() {
+            if(!tcsProfileOptionsContainer) return;
+            const options = tcsProfileOptionsContainer.querySelectorAll('.tcs-option');
+            options.forEach(opt => {
+                opt.addEventListener('click', function(e) {
+                    e.stopPropagation(); 
+                    currentProfileInput.value = this.getAttribute('data-value');
+                    tcsProfileSelect.classList.remove('open'); 
+                    tcsProfileTrigger.classList.remove('active');
+                    window.renderProfileOptionsUI(); 
+                });
+            });
+        }
+
+        // 5. BUTON GÖREVLERİ (EKLE, KAYDET, ANA YAP)
+        if(addNewProfileBtn) {
+            addNewProfileBtn.addEventListener('click', () => {
+                document.getElementById('newProfileNameInput').value = ''; 
+                if(addProfileModal) addProfileModal.style.display = 'flex'; 
+                setTimeout(() => {
+                    const inp = document.getElementById('newProfileNameInput');
+                    if(inp) inp.focus();
+                }, 100);
+            });
+        }
+        
+        if(closeAddProfileModalBtn) {
+            closeAddProfileModalBtn.addEventListener('click', () => {
+                if(addProfileModal) addProfileModal.style.display = 'none';
+            });
+        }
+
+        if(saveNewProfileBtn) {
+            saveNewProfileBtn.addEventListener('click', async () => {
+                const nameInput = document.getElementById('newProfileNameInput');
+                const name = nameInput.value.trim();
+                if (!name) { 
+                    nameInput.style.borderColor = '#d9534f'; 
+                    setTimeout(() => nameInput.style.borderColor = '#dce4ec', 2000); 
+                    return; 
+                }
+
+                const newId = 'profile_' + Date.now();
+                window.plannerProfiles.push({ id: newId, name: name, isMain: false });
+                
+                await window.savePlannerProfilesToDB(); 
+                if(currentProfileInput) currentProfileInput.value = newId; 
+                window.renderProfileOptionsUI();
+                
+                if(addProfileModal) addProfileModal.style.display = 'none';
+                if(window.showProfAlert) showProfAlert('success', 'Oluşturuldu!', `'${name}' programı başarıyla kaydedildi.`, '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
+            });
+        }
+
+        // ANA YAP Motoru
+        window.executeSetMainProfile = async function() {
+            const currentId = currentProfileInput.value;
+            window.plannerProfiles.forEach(p => p.isMain = false);
+            const newMain = window.plannerProfiles.find(p => p.id === currentId);
+            if(newMain) newMain.isMain = true;
+
+            await window.savePlannerProfilesToDB(); 
+            window.renderProfileOptionsUI();
+            
+            if(typeof window.renderTodayTasks === 'function') window.renderTodayTasks();
+            
+            if(window.showProfAlert) showProfAlert('success', 'Ana Program Değişti', `'${newMain.name}' artık varsayılan programınız oldu. Günlük ekranda bu program gösterilecek.`, '<button class="p-alert-btn p-alert-btn-blue" onclick="closeProfAlert()">Tamam</button>');
+        };
+
+        if(setAsMainBtn) {
+            setAsMainBtn.addEventListener('click', () => {
+                const currentId = currentProfileInput.value;
+                const targetProfile = window.plannerProfiles.find(p => p.id === currentId);
+                if(!targetProfile) return;
+
+                if(window.showProfAlert) {
+                    showProfAlert(
+                        'warning', 
+                        'Emin misiniz?', 
+                        `'${targetProfile.name}' programını <b>Ana Program</b> yapmak istediğinize emin misiniz? Günlük program ekranınız tamamen buna göre değişecektir.`, 
+                        `
+                        <button class="p-alert-btn p-alert-btn-gray" onclick="closeProfAlert()">İptal</button>
+                        <button class="p-alert-btn p-alert-btn-blue" onclick="window.executeSetMainProfile()">Evet, Ana Yap</button>
+                        `
+                    );
+                } else {
+                    if(confirm(`'${targetProfile.name}' programını Ana Program yapmak istediğinize emin misiniz?`)) {
+                        window.executeSetMainProfile();
+                    }
+                }
+            });
+        }
+
+        // YENİ: İndirme Menüsü Aç/Kapat ve Dışarı Tıklama Motoru
+        window.toggleExportMenu = function(e) {
+            e.stopPropagation(); // Diğer tıklamalarla çakışmayı engeller
+            const wrapper = document.getElementById('tcs-exportProfile');
+            const trigger = document.getElementById('exportProfileTrigger');
+            if(wrapper && trigger) {
+                wrapper.classList.toggle('open');
+                trigger.classList.toggle('active');
+            }
+        };
+
+        window.addEventListener('click', function(e) {
+            const wrapper = document.getElementById('tcs-exportProfile');
+            const trigger = document.getElementById('exportProfileTrigger');
+            if (wrapper && trigger && !wrapper.contains(e.target)) {
+                wrapper.classList.remove('open');
+                trigger.classList.remove('active');
+            }
+        });
 
     </script>
 
